@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             xmlns:models="clr-namespace:MauiApp16.Models"
+             x:Class="MauiApp16.Views.StatisticsPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Заголовок -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="📊 Статистика"
+                       FontSize="24" FontAttributes="Bold"
+                       TextColor="{DynamicResource TextPrimary}"
+                       Margin="0,10,0,4"/>
+                <Label Text="Детальний аналіз вашої навчальної активності"
+                       FontSize="14"
+                       TextColor="{DynamicResource TextSecondary}"/>
+            </VerticalStackLayout>
+
+            <!-- 1. Відсоток завершення -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   Background="{StaticResource PrimaryGradient}" Margin="0,5">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+
+                    <HorizontalStackLayout Grid.Row="0" Spacing="10"
+                                           HorizontalOptions="Center">
+                        <Label Text="🎯" FontSize="32"/>
+                        <Label Text="Відсоток завершення"
+                               FontSize="20" FontAttributes="Bold"
+                               TextColor="{DynamicResource SurfaceLight}"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <Label Grid.Row="1"
+                           Text="{Binding CompletionPercentage, StringFormat='{0:F1}%'}"
+                           FontSize="72" FontAttributes="Bold"
+                           TextColor="{DynamicResource SurfaceLight}"
+                           HorizontalOptions="Center"/>
+
+                    <Label Grid.Row="2"
+                           Text="всіх завдань виконано"
+                           FontSize="16"
+                           TextColor="White"
+                           Opacity="0.75"
+                           HorizontalOptions="Center"/>
+                </Grid>
+            </Frame>
+
+            <!-- 2. Кількісні картки 3 шт -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+
+                <!-- Всього -->
+                <Frame Grid.Column="0" CornerRadius="16" Padding="16"
+                       HasShadow="True" BackgroundColor="{DynamicResource Surface}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📚" FontSize="30" HorizontalOptions="Center"/>
+                        <Label Text="Всього" FontSize="12"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding TotalTasks}" FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Виконано -->
+                <Frame Grid.Column="1" CornerRadius="16" Padding="16"
+                       HasShadow="True" BackgroundColor="{DynamicResource Surface}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="✅" FontSize="30" HorizontalOptions="Center"/>
+                        <Label Text="Виконано" FontSize="12"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding CompletedTasks}" FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Secondary}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Залишилось -->
+                <Frame Grid.Column="2" CornerRadius="16" Padding="16"
+                       HasShadow="True" BackgroundColor="{DynamicResource Surface}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="⏳" FontSize="30" HorizontalOptions="Center"/>
+                        <Label Text="Залишилось" FontSize="12"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding PendingTasks}" FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Warning}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- 3. Активність за 14 днів -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}" Margin="0,5">
+                <VerticalStackLayout Spacing="16">
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="📈 Активність за 14 днів"
+                                   FontSize="18" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Label Text="Виконані завдання щодня"
+                                   FontSize="13"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                        </VerticalStackLayout>
+
+                        <!-- 14d badge — виправлено видимість -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="{DynamicResource Primary}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 6"
+                                VerticalOptions="Center">
+                            <Label Text="14d" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   Padding="10,5"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"/>
+                        </Border>
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding ChartData}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="60,*,50"
+                                      ColumnSpacing="10"
+                                      Margin="0,5" HeightRequest="32">
+
+                                    <!-- Дата -->
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Label}"
+                                           FontSize="12" FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextSecondary}"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"/>
+
+                                    <!-- Бар -->
+                                    <Grid Grid.Column="1" HeightRequest="26"
+                                          x:Name="ChartBarContainer">
+
+                                        <!-- Фон -->
+                                        <Frame CornerRadius="6" Padding="0" HasShadow="False"
+                                               BackgroundColor="{DynamicResource ProgressBackground}"
+                                               VerticalOptions="Center" HeightRequest="26"
+                                               HorizontalOptions="FillAndExpand"
+                                               BorderColor="Transparent"/>
+
+                                        <!-- Заповнення — цифру всередині прибрано -->
+                                        <Frame CornerRadius="6" Padding="0" HasShadow="False"
+                                               Background="{StaticResource PrimaryGradient}"
+                                               HeightRequest="26"
+                                               HorizontalOptions="Start"
+                                               VerticalOptions="Center"
+                                               BorderColor="Transparent"
+                                               IsVisible="{Binding Value, Converter={StaticResource IntToBoolConverter}}">
+                                            <Frame.WidthRequest>
+                                                <MultiBinding Converter="{StaticResource ProgressWidthConverter}">
+                                                    <Binding Path="BarPercent"/>
+                                                    <Binding Path="Width" Source="{x:Reference ChartBarContainer}"/>
+                                                </MultiBinding>
+                                            </Frame.WidthRequest>
+                                        </Frame>
+                                    </Grid>
+
+                                    <!-- Кількість праворуч від бару -->
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Value, StringFormat='{0} шт'}"
+                                           FontSize="12" FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextSecondary}"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="20" Spacing="8">
+                                <Label Text="📊" FontSize="48"
+                                       HorizontalOptions="Center" Opacity="0.3"/>
+                                <Label Text="Недостатньо даних"
+                                       FontSize="14"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- 4. Середній час + Серія + Топ-Предмет -->
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                  ColumnSpacing="12" RowSpacing="12">
+
+                <!-- 4a. Середній час виконання -->
+                <Frame Grid.Row="0" Grid.Column="0"
+                       CornerRadius="16" Padding="16" HasShadow="True"
+                       BackgroundColor="{DynamicResource Surface}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="⏱️" FontSize="28" HorizontalOptions="Center"/>
+                        <Label Text="Сер. час виконання"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding AvgCompletionDisplay}"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="від створення до здачі"
+                               FontSize="11"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 4b. Серія активності -->
+                <Frame Grid.Row="0" Grid.Column="1"
+                       CornerRadius="16" Padding="16" HasShadow="True"
+                       BackgroundColor="{DynamicResource Surface}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="🔥" FontSize="28" HorizontalOptions="Center"/>
+                        <Label Text="Серія активності"
+                               FontSize="12" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <VerticalStackLayout Grid.Column="0"
+                                                 HorizontalOptions="Center" Spacing="3">
+                                <Label Text="{Binding CurrentStreak}"
+                                       FontSize="26" FontAttributes="Bold"
+                                       TextColor="{DynamicResource Warning}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="зараз"
+                                       FontSize="11"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1"
+                                                 HorizontalOptions="Center" Spacing="3">
+                                <Label Text="{Binding BestStreak}"
+                                       FontSize="26" FontAttributes="Bold"
+                                       TextColor="{DynamicResource Secondary}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="рекорд"
+                                       FontSize="11"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="дн. поспіль"
+                               FontSize="11"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- 4c. Топ-предмет -->
+                <Frame Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                       CornerRadius="16" Padding="16" HasShadow="True"
+                       BackgroundColor="{DynamicResource Surface}">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                        <Label Grid.Column="0" Text="🏆"
+                               FontSize="36" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4"
+                                             VerticalOptions="Center">
+                            <Label Text="Найпродуктивніший предмет"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Text="{Binding TopCourseDisplay}"
+                                   FontSize="17" FontAttributes="Bold"
+                                   TextColor="{DynamicResource Primary}"
+                                   LineBreakMode="TailTruncation"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+
+            </Grid>
+
+            <!-- 5. Продуктивність по днях тижня -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}" Margin="0,5">
+                <VerticalStackLayout Spacing="16">
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="📅 Найпродуктивніші дні тижня"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Label Text="Скільки завдань ви виконуєте в різні дні"
+                               FontSize="13"
+                               TextColor="{DynamicResource TextSecondary}"/>
+                    </VerticalStackLayout>
+
+                    <CollectionView ItemsSource="{Binding WeekDayProductivity}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:WeekDayProductivityItem">
+                                <Grid ColumnDefinitions="36,*,44"
+                                      ColumnSpacing="12"
+                                      Margin="0,5" HeightRequest="32">
+
+                                    <Label Grid.Column="0"
+                                           Text="{Binding DayName}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextPrimary}"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"/>
+
+                                    <Grid Grid.Column="1" HeightRequest="26"
+                                          x:Name="WeekBarContainer">
+
+                                        <!-- Фон -->
+                                        <Frame CornerRadius="6" Padding="0" HasShadow="False"
+                                               BackgroundColor="{DynamicResource ProgressBackground}"
+                                               HeightRequest="26"
+                                               HorizontalOptions="FillAndExpand"
+                                               VerticalOptions="Center"
+                                               BorderColor="Transparent"/>
+
+                                        <!-- Заповнення — виправлено кольори градієнту -->
+                                        <Frame CornerRadius="6" Padding="0" HasShadow="False"
+                                               HeightRequest="26"
+                                               HorizontalOptions="Start"
+                                               VerticalOptions="Center"
+                                               BorderColor="Transparent"
+                                               IsVisible="{Binding Count,
+                                                   Converter={StaticResource IntToBoolConverter}}">
+                                            <Frame.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="#004e4e" Offset="0.0"/>
+                                                    <GradientStop Color="#1c9770" Offset="1.0"/>
+                                                </LinearGradientBrush>
+                                            </Frame.Background>
+                                            <Frame.WidthRequest>
+                                                <MultiBinding Converter="{StaticResource ProgressWidthConverter}">
+                                                    <Binding Path="BarPercent"/>
+                                                    <Binding Path="Width"
+                                                             Source="{x:Reference WeekBarContainer}"/>
+                                                </MultiBinding>
+                                            </Frame.WidthRequest>
+                                        </Frame>
+                                    </Grid>
+
+                                    <HorizontalStackLayout Grid.Column="2"
+                                       VerticalOptions="Center"
+                                       Spacing="2">
+                                        <Label Text="{Binding Count}"
+                                               FontSize="13" FontAttributes="Bold"
+                                               TextColor="{DynamicResource Secondary}"
+                                               VerticalOptions="Center"/>
+                                        <Label Text="★" FontSize="13"
+                                               TextColor="{DynamicResource Warning}"
+                                               VerticalOptions="Center"
+                                               IsVisible="{Binding IsBestDay}"/>
+                                    </HorizontalStackLayout>
+
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <Label Text="Немає виконаних завдань"
+                                   FontSize="14"
+                                   TextColor="{DynamicResource TextSecondary}"
+                                   HorizontalOptions="Center"
+                                   Margin="0,10"/>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- 6. Розбивка по пріоритетах -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}" Margin="0,5">
+                <VerticalStackLayout Spacing="16">
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="🎛️ Розбивка по пріоритетах"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Label Text="Розподіл усіх завдань за рівнем важливості"
+                               FontSize="13"
+                               TextColor="{DynamicResource TextSecondary}"/>
+                    </VerticalStackLayout>
+
+                    <CollectionView ItemsSource="{Binding PriorityStats}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:PriorityStatItem">
+                                <Grid ColumnDefinitions="110,*,40"
+                                      ColumnSpacing="12"
+                                      Margin="0,7" HeightRequest="32">
+
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Label}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextPrimary}"
+                                           VerticalOptions="Center"/>
+
+                                    <Grid Grid.Column="1" HeightRequest="26"
+                                          x:Name="PrioBarContainer">
+
+                                        <Frame CornerRadius="6" Padding="0" HasShadow="False"
+                                               BackgroundColor="{DynamicResource ProgressBackground}"
+                                               HeightRequest="26"
+                                               HorizontalOptions="FillAndExpand"
+                                               VerticalOptions="Center"
+                                               BorderColor="Transparent"/>
+
+                                        <Frame CornerRadius="6" Padding="0" HasShadow="False"
+                                               BackgroundColor="{Binding BarColor,
+                                                   Converter={StaticResource ColorStringToColorConverter}}"
+                                               HeightRequest="26"
+                                               HorizontalOptions="Start"
+                                               VerticalOptions="Center"
+                                               BorderColor="Transparent"
+                                               IsVisible="{Binding Count,
+                                                   Converter={StaticResource IntToBoolConverter}}">
+                                            <Frame.WidthRequest>
+                                                <MultiBinding Converter="{StaticResource ProgressWidthConverter}">
+                                                    <Binding Path="BarPercent"/>
+                                                    <Binding Path="Width"
+                                                             Source="{x:Reference PrioBarContainer}"/>
+                                                </MultiBinding>
+                                            </Frame.WidthRequest>
+                                        </Frame>
+                                    </Grid>
+
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Count}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{DynamicResource Secondary}"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- 7. Мотиваційна картка -->
+            <Frame CornerRadius="16" Padding="20" HasShadow="False"
+                   Background="{StaticResource PrimaryGradient}"
+                   Opacity="0.75" Margin="0,5,0,10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="💡" FontSize="28" HorizontalOptions="Center"/>
+                    <Label Text="Продовжуйте в тому ж дусі!"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="Кожне виконане завдання — це крок до успіху"
+                           FontSize="13"
+                           TextColor="White"
+                           Opacity="0.75"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{DynamicResource Primary}"
+                               HeightRequest="40" Margin="0,10"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

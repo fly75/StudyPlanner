@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Light Theme Colors -->
+    <Color x:Key="PrimaryLight">#027876</Color>
+    <Color x:Key="SecondaryLight">#1c9770</Color>
+    <Color x:Key="TertiaryLight">#004e4e</Color>
+    <Color x:Key="AccentLight">#1c9770</Color>
+    <Color x:Key="BackgroundLight">#FFFFFF</Color>
+    <Color x:Key="SurfaceLight">#F0F9F7</Color>
+    <Color x:Key="TextLight">#212121</Color>
+    <Color x:Key="TextSecondaryLight">#4a7070</Color>
+    <Color x:Key="ProgressBackgroundLight">#C8E8E5</Color>
+
+    <!-- Dark Theme Colors -->
+    <Color x:Key="PrimaryDark">#1c9770</Color>
+    <Color x:Key="SecondaryDark">#027876</Color>
+    <Color x:Key="TertiaryDark">#004e4e</Color>
+    <Color x:Key="AccentDark">#1c9770</Color>
+    <Color x:Key="BackgroundDark">#0d1f1f</Color>
+    <Color x:Key="SurfaceDark">#142828</Color>
+    <Color x:Key="TextDark">#d4eceb</Color>
+    <Color x:Key="TextSecondaryDark">#8ab8b8</Color>
+    <Color x:Key="ProgressBackgroundDark">#1a3535</Color>
+
+    <!-- Current Theme (Default Light) -->
+    <Color x:Key="Primary">#027876</Color>
+    <Color x:Key="Secondary">#1c9770</Color>
+    <Color x:Key="Tertiary">#004e4e</Color>
+    <Color x:Key="Accent">#1c9770</Color>
+    <Color x:Key="Background">#FFFFFF</Color>
+    <Color x:Key="Surface">#F0F9F7</Color>
+    <Color x:Key="TextPrimary">#212121</Color>
+    <Color x:Key="TextSecondary">#4a7070</Color>
+    <Color x:Key="ProgressBackground">#C8E8E5</Color>
+
+    <!-- Neutral Colors -->
+    <Color x:Key="White">White</Color>
+    <Color x:Key="Black">Black</Color>
+    <Color x:Key="Gray050">#FAFAFA</Color>
+    <Color x:Key="Gray100">#F5F5F5</Color>
+    <Color x:Key="Gray200">#EEEEEE</Color>
+    <Color x:Key="Gray300">#E0E0E0</Color>
+    <Color x:Key="Gray400">#BDBDBD</Color>
+    <Color x:Key="Gray500">#9E9E9E</Color>
+    <Color x:Key="Gray600">#757575</Color>
+    <Color x:Key="Gray700">#616161</Color>
+    <Color x:Key="Gray800">#424242</Color>
+    <Color x:Key="Gray900">#212121</Color>
+    <Color x:Key="Gray950">#141414</Color>
+
+    <!-- Status Colors -->
+    <Color x:Key="Success">#1c9770</Color>
+    <Color x:Key="Warning">#fbb63c</Color>
+    <Color x:Key="Error">#ff3555</Color>
+    <Color x:Key="Info">#2196F3</Color>
+
+    <!-- Priority Colors -->
+    <Color x:Key="PriorityLow">#1c9770</Color>
+    <Color x:Key="PriorityMedium">#fbb63c</Color>
+    <Color x:Key="PriorityHigh">#ff3555</Color>
+
+    <!-- Brushes for Light Theme -->
+    <SolidColorBrush x:Key="BackgroundLightBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SurfaceLightBrush" Color="#F0F9F7"/>
+
+    <!-- Brushes for Dark Theme -->
+    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="#0d1f1f"/>
+    <SolidColorBrush x:Key="SurfaceDarkBrush" Color="#142828"/>
+
+    <!-- Current Brushes -->
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Background}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+
+    <!-- Gradient Brushes -->
+    <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#004e4e" Offset="0.0" />
+        <GradientStop Color="#027876" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <!-- QrCode -->
+    <x:String x:Key="QrCodeIcon">qr_code_dark.png</x:String>
+
+    <!-- Task colors -->
+    <Color x:Key="Red">#F05454</Color>
+    <Color x:Key="Orange">#F4845F</Color>
+    <Color x:Key="Peach">#F4A261</Color>
+    <Color x:Key="Yellow">#F9C74F</Color>
+    <Color x:Key="Light green">#90BE6D</Color>
+    <Color x:Key="Medium green">#52B788</Color>
+    <Color x:Key="Turquoise">#3AAFA9</Color>
+    <Color x:Key="Blue-violet">#5B8CDB</Color>
+    <Color x:Key="Violet">#7B6CF6</Color>
+    <Color x:Key="Light violet">#C77DFF</Color>
+    <Color x:Key="Pink">#F472B6</Color>
+    <Color x:Key="Raspberry">#E05C97</Color>
+
+</ResourceDictionary>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             x:Class="MauiApp16.Views.CoursesPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20,20,20,0">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,15">
+            <Label Text="📚 Мої предмети" 
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource TextPrimary}"
+                   Margin="0,10,0,5"/>
+            <Label Text="Керуйте своїми курсами та відстежуйте прогрес" 
+                   FontSize="14"
+                   TextColor="{DynamicResource TextSecondary}"
+                   Margin="0,2"/>
+        </VerticalStackLayout>
+
+        <!-- Пошук -->
+        <Frame Grid.Row="1"
+           CornerRadius="14" Padding="12,0"
+           HasShadow="False"
+           BackgroundColor="{DynamicResource Surface}"
+           Margin="0,0,0,10">
+            <SearchBar Placeholder="🔍 Пошук предметів..."
+                   Text="{Binding SearchQuery}"
+                   TextColor="{DynamicResource TextPrimary}"
+                   PlaceholderColor="{DynamicResource TextSecondary}"
+                   BackgroundColor="Transparent"
+                   CancelButtonColor="{DynamicResource Primary}"/>
+        </Frame>
+
+        <!-- Courses List -->
+        <ScrollView Grid.Row="2">
+            <CollectionView ItemsSource="{Binding FilteredCourses}" SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="8"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="20"
+                               Padding="20"
+                               HasShadow="True"
+                               BackgroundColor="{DynamicResource Surface}"
+                               Margin="0,10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CoursesViewModel}}, Path=CourseSelectedCommand}"
+                                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+
+                                <!-- Course Header with Delete Button -->
+                                <Grid Grid.Row="0" 
+                                      ColumnDefinitions="Auto,*,Auto"
+                                      Margin="0,0,0,10">
+
+                                    <BoxView Grid.Column="0"
+                                             WidthRequest="6" 
+                                             HeightRequest="40"
+                                             Color="{Binding Color, Converter={StaticResource ColorStringToColorConverter}}"
+                                             CornerRadius="3"
+                                             VerticalOptions="Center"
+                                             Margin="0,0,10,0"/>
+
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Name}" 
+                                           FontSize="20" 
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextPrimary}"
+                                           VerticalOptions="Center"/>
+
+                                    <!-- Delete Button зі стилем -->
+                                    <Frame Grid.Column="2" Style="{StaticResource DeleteButtonFrame}">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CoursesViewModel}}, Path=DeleteCourseCommand}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Frame.GestureRecognizers>
+                                        <Label Text="✕"
+                                               FontSize="20"
+                                               FontAttributes="Bold"
+                                               TextColor="White"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Frame>
+                                </Grid>
+
+                                <!-- Description -->
+                                <Label Grid.Row="1"
+                                       Text="{Binding Description}" 
+                                       FontSize="14" 
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       LineBreakMode="WordWrap"
+                                       Margin="0,0,0,15"
+                                       IsVisible="{Binding Description, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+
+                                <!-- Progress Section -->
+                                <VerticalStackLayout Grid.Row="2" Spacing="8">
+                                    <Label Text="📈 Прогрес виконання" 
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextSecondary}"/>
+
+                                    <!-- ВИПРАВЛЕНИЙ Custom Progress Bar з підтримкою теми -->
+                                    <Grid HeightRequest="12" ColumnDefinitions="*" x:Name="ProgressContainer">
+                                        <!-- Background - тепер з DynamicResource -->
+                                        <BoxView Grid.Column="0"
+                                                 Color="{DynamicResource ProgressBackground}"
+                                                 CornerRadius="6"
+                                                 HeightRequest="12"
+                                                 HorizontalOptions="FillAndExpand"/>
+
+                                        <!-- Progress Fill використовує BoxView з динамічним кольором -->
+                                        <BoxView Grid.Column="0"
+                                                 Color="{Binding Color, Converter={StaticResource ColorStringToColorConverter}}"
+                                                 CornerRadius="6"
+                                                 HeightRequest="12"
+                                                 HorizontalOptions="Start"
+                                                 VerticalOptions="Center">
+                                            <BoxView.WidthRequest>
+                                                <MultiBinding Converter="{StaticResource ProgressWidthConverter}">
+                                                    <Binding Path="Progress" />
+                                                    <Binding Path="Width" Source="{x:Reference ProgressContainer}" />
+                                                </MultiBinding>
+                                            </BoxView.WidthRequest>
+                                        </BoxView>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0"
+                                               Text="Завершено" 
+                                               FontSize="12" 
+                                               TextColor="{DynamicResource TextSecondary}" />
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Progress, StringFormat='{0:F1}%'}" 
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding Color, Converter={StaticResource ColorStringToColorConverter}}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+
+                                <!-- Divider -->
+                                <BoxView Grid.Row="3"
+                                         Color="{DynamicResource Gray300}"
+                                         HeightRequest="1"
+                                         Margin="0,15,0,10"/>
+
+                                <!-- Action Button -->
+                                <Button Grid.Row="4"
+                                        Text="📋 Переглянути завдання"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CoursesViewModel}}, Path=CourseSelectedCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="{Binding Color, Converter={StaticResource ColorStringToColorConverter}}"
+                                        TextColor="{DynamicResource Gray900}"
+                                        FontSize="14"
+                                        FontAttributes="Bold"
+                                        HeightRequest="45"
+                                        CornerRadius="10"/>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="40" Spacing="15" VerticalOptions="Center">
+                        <Label Text="📚" 
+                               FontSize="80"
+                               HorizontalOptions="Center"
+                               Opacity="0.3"/>
+                        <Label Text="Поки немає предметів" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Додайте свій перший предмет, щоб почати!" 
+                               FontSize="15"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </ScrollView>
+
+        <!-- Add Course Button -->
+        <Button Grid.Row="3" 
+                Text="➕ Додати предмет"
+                Command="{Binding AddCourseCommand}"
+                BackgroundColor="{DynamicResource Primary}"
+                TextColor="{DynamicResource SurfaceLight}"
+                FontSize="18"
+                FontAttributes="Bold"
+                HeightRequest="55"/>
+
+    </Grid>
+</ContentPage>

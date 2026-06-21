@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MauiApp16.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:MauiApp16.Views"
+    x:Name="AppShellRoot"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    FlyoutBackgroundColor="{DynamicResource Background}"
+    Shell.BackgroundColor="{DynamicResource Background}">
+
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="{DynamicResource Surface}"
+              Padding="25"
+              HeightRequest="220">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#004e4e" Offset="0.0" />
+                    <GradientStop Color="#027876" Offset="1.0" />
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <VerticalStackLayout VerticalOptions="Center" Spacing="8">
+                <Label Text="📚" 
+                       FontSize="48"
+                       HorizontalOptions="Center"/>
+                <Label Text="Study Planner" 
+                       FontSize="28" 
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TextDark}"
+                       HorizontalOptions="Center"/>
+                <Label Text="Розумний менеджер навчання" 
+                       FontSize="14" 
+                       TextColor="{DynamicResource TextDark}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <Frame CornerRadius="0"
+               Padding="20"
+               HasShadow="False"
+               BackgroundColor="{DynamicResource Surface}">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Версія 1.0.0" 
+                       FontSize="12"
+                       TextColor="{DynamicResource TextSecondary}"
+                       HorizontalOptions="Center"/>
+                <Label Text="© 2026 Study Planner" 
+                       FontSize="11"
+                       TextColor="{DynamicResource TextSecondary}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Frame>
+    </Shell.FlyoutFooter>
+
+    <!-- Styles for Flyout Items -->
+    <Shell.Resources>
+        <Style TargetType="Label" x:Key="FlyoutItemLabelStyle">
+            <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        </Style>
+    </Shell.Resources>
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid HeightRequest="52"
+              Padding="16,0"
+              ColumnDefinitions="Auto,*">
+
+                <Label Grid.Column="1"
+                   Text="{Binding Title}"
+                   FontSize="16"
+                   TextColor="{DynamicResource TextPrimary}"
+                   VerticalOptions="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <!-- Authorization (hidden from menu) -->
+    <ShellContent
+        Title="Вхід"
+        Route="AuthorizationPage"
+        ContentTemplate="{DataTemplate views:AuthorizationPage}"
+        FlyoutItemIsVisible="False" />
+
+    <!-- Main Pages -->
+    <FlyoutItem Title="🏠 Головна">
+        <ShellContent
+            Route="DashboardPage"
+            ContentTemplate="{DataTemplate views:DashboardPage}">
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="📚 Предмети">
+        <ShellContent
+            Route="CoursesPage"
+            ContentTemplate="{DataTemplate views:CoursesPage}">
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="📅 Календар">
+        <ShellContent
+        Route="CalendarPage"
+        ContentTemplate="{DataTemplate views:CalendarPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="📊 Статистика">
+        <ShellContent
+            Route="StatisticsPage"
+            ContentTemplate="{DataTemplate views:StatisticsPage}">
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="🤖 Рекомендації AI">
+        <ShellContent
+        Route="RecommendationsPage"
+        ContentTemplate="{DataTemplate views:RecommendationsPage}">
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="⚙️ Налаштування">
+        <ShellContent
+            Route="SettingsPage"
+            ContentTemplate="{DataTemplate views:SettingsPage}">
+        </ShellContent>
+    </FlyoutItem>
+
+
+    <!-- Detail Pages (hidden from menu) -->
+    <ShellContent
+        Route="TasksPage"
+        ContentTemplate="{DataTemplate views:TasksPage}"
+        FlyoutItemIsVisible="False"/>
+
+    <ShellContent
+        Route="TaskDetailPage"
+        ContentTemplate="{DataTemplate views:TaskDetailPage}"
+        FlyoutItemIsVisible="False"/>
+
+    <ShellContent
+        Route="RegistrationPage"
+        ContentTemplate="{DataTemplate views:RegistrationPage}"
+        FlyoutItemIsVisible="False"/>
+
+    <ShellContent
+        Route="ProfilePage"
+        ContentTemplate="{DataTemplate views:ProfilePage}"
+        FlyoutItemIsVisible="False"/>
+
+    <ShellContent
+        Route="HelpPage"
+        ContentTemplate="{DataTemplate views:HelpPage}"
+        FlyoutItemIsVisible="False"/>
+
+</Shell>

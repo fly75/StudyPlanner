@@ -1,0 +1,607 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Style TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{DynamicResource Primary}" />
+    </Style>
+
+    <!-- Базовий стиль кнопки з ховер-ефектами -->
+    <Style TargetType="Button">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Primary}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="Scale" Value="1.02"/>
+                            <Setter Property="Opacity" Value="0.9"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="Scale" Value="0.98"/>
+                            <Setter Property="Opacity" Value="0.8"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для вторинної кнопки (Secondary) -->
+    <Style TargetType="Button" x:Key="SecondaryButton">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Secondary}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Secondary}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="Scale" Value="1.02"/>
+                            <Setter Property="Opacity" Value="0.9"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="Scale" Value="0.98"/>
+                            <Setter Property="Opacity" Value="0.8"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для кнопки з обведенням (Outline) -->
+    <Style TargetType="Button" x:Key="OutlineButton">
+        <Setter Property="TextColor" Value="{DynamicResource Primary}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor" Value="{DynamicResource Primary}" />
+        <Setter Property="BorderWidth" Value="2"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
+                            <Setter Property="TextColor" Value="{DynamicResource Gray900}"/>
+                            <Setter Property="Scale" Value="1.02"/>
+                            <Setter Property="Opacity" Value="0.9"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
+                            <Setter Property="TextColor" Value="{DynamicResource Gray900}"/>
+                            <Setter Property="Scale" Value="0.98"/>
+                            <Setter Property="Opacity" Value="0.8"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для кнопки помилки/видалення (Danger) -->
+    <Style TargetType="Button" x:Key="DangerButton">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Error}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Error}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#D32F2F"/>
+                            <Setter Property="Scale" Value="1.02"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#C62828"/>
+                            <Setter Property="Scale" Value="0.98"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для успішної кнопки (Success) -->
+    <Style TargetType="Button" x:Key="SuccessButton">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Success}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Success}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#1c9770"/>
+                            <Setter Property="Scale" Value="1.02"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#004e4e"/>
+                            <Setter Property="Scale" Value="0.98"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для попереджувальної кнопки (Warning) -->
+    <Style TargetType="Button" x:Key="WarningButton">
+        <Setter Property="TextColor" Value="{DynamicResource Gray900}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Warning}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Warning}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#FFA000"/>
+                            <Setter Property="Scale" Value="1.02"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#FF8F00"/>
+                            <Setter Property="Scale" Value="0.98"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для інформаційної кнопки (Info) -->
+    <Style TargetType="Button" x:Key="InfoButton">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Info}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Info}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#1976D2"/>
+                            <Setter Property="Scale" Value="1.02"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#1565C0"/>
+                            <Setter Property="Scale" Value="0.98"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для текстової кнопки (без фону) -->
+    <Style TargetType="Button" x:Key="TextButton">
+        <Setter Property="TextColor" Value="{DynamicResource Primary}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Margin" Value="20,5"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="Scale" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.7"/>
+                            <Setter Property="Scale" Value="1.05"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="Scale" Value="0.95"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="Opacity" Value="0.3"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="PlaceholderColor" Value="{DynamicResource Gray500}" />
+        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="Margin" Value="0,5"/>
+    </Style>
+
+    <Style TargetType="Editor">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="PlaceholderColor" Value="{DynamicResource Gray500}" />
+        <Setter Property="Margin" Value="0,5"/>
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="LineBreakMode" Value="WordWrap"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="TitleLabel">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="Margin" Value="0,10,0,5"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="SubtitleLabel">
+        <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="Margin" Value="0,5"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="CaptionLabel">
+        <Setter Property="TextColor" Value="{DynamicResource TextSecondary}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="0,2"/>
+    </Style>
+
+    <Style TargetType="Frame">
+        <Setter Property="HasShadow" Value="True" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Margin" Value="0,8"/>
+    </Style>
+
+    <Style TargetType="Frame" x:Key="CardFrame">
+        <Setter Property="HasShadow" Value="True" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Margin" Value="0,10"/>
+    </Style>
+
+    <Style TargetType="Frame" x:Key="HighlightFrame">
+        <Setter Property="HasShadow" Value="True" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Primary}"/>
+        <Setter Property="Background" Value="{StaticResource PrimaryGradient}" />
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Margin" Value="0,10"/>
+    </Style>
+
+    <Style TargetType="Switch">
+        <Setter Property="OnColor" Value="{DynamicResource Primary}" />
+        <Setter Property="ThumbColor" Value="{DynamicResource Gray900}"/>
+    </Style>
+
+    <Style TargetType="Picker">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="TitleColor" Value="{DynamicResource TextSecondary}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Margin" Value="0,5"/>
+    </Style>
+
+    <Style TargetType="DatePicker">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Margin" Value="0,5"/>
+
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource Gray500}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="TimePicker">
+        <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Surface}" />
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Margin" Value="0,5"/>
+
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="TextColor" Value="{DynamicResource TextPrimary}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ProgressBar">
+        <Setter Property="ProgressColor" Value="{DynamicResource Primary}" />
+        <Setter Property="HeightRequest" Value="8"/>
+        <Setter Property="Margin" Value="0,5"/>
+    </Style>
+
+    <Style TargetType="BoxView" x:Key="Divider">
+        <Setter Property="Color" Value="{DynamicResource Gray300}" />
+        <Setter Property="HeightRequest" Value="1"/>
+        <Setter Property="Margin" Value="0,10"/>
+    </Style>
+
+    <!-- Shell Flyout Styles -->
+    <Style TargetType="Shell" ApplyToDerivedTypes="True">
+        <Setter Property="Shell.ForegroundColor" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="Shell.BackgroundColor" Value="{DynamicResource Background}" />
+        <Setter Property="Shell.TitleColor" Value="{DynamicResource TextPrimary}" />
+    </Style>
+
+    <!-- Стиль для круглої кнопки видалення (Frame) -->
+    <Style TargetType="Frame" x:Key="DeleteButtonFrame">
+        <Setter Property="WidthRequest" Value="50"/>
+        <Setter Property="HeightRequest" Value="50"/>
+        <Setter Property="CornerRadius" Value="25"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HasShadow" Value="True"/>
+        <Setter Property="BackgroundColor" Value="{StaticResource Error}"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Error}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#D32F2F"/>
+                            <Setter Property="Scale" Value="1.1"/>
+                            <Setter Property="Opacity" Value="0.95"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#C62828"/>
+                            <Setter Property="Scale" Value="0.95"/>
+                            <Setter Property="Opacity" Value="0.85"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для круглої кнопки успіху (Frame) -->
+    <Style TargetType="Frame" x:Key="SuccessButtonFrame">
+        <Setter Property="WidthRequest" Value="50"/>
+        <Setter Property="HeightRequest" Value="50"/>
+        <Setter Property="CornerRadius" Value="25"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HasShadow" Value="True"/>
+        <Setter Property="BackgroundColor" Value="{StaticResource Success}"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource Success}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#1c9770"/>
+                            <Setter Property="Scale" Value="1.1"/>
+                            <Setter Property="Opacity" Value="0.95"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#004e4e"/>
+                            <Setter Property="Scale" Value="0.95"/>
+                            <Setter Property="Opacity" Value="0.85"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <!-- Стиль для круглої кнопки акценту (Frame) -->
+    <Style TargetType="Frame" x:Key="AccentButtonFrame">
+        <Setter Property="WidthRequest" Value="50"/>
+        <Setter Property="HeightRequest" Value="50"/>
+        <Setter Property="CornerRadius" Value="25"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="HasShadow" Value="True"/>
+        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}"/>
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{DynamicResource Accent}"/>
+                            <Setter Property="Scale" Value="1"/>
+                            <Setter Property="Opacity" Value="1"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="Scale" Value="1.1"/>
+                            <Setter Property="Opacity" Value="0.9"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="Scale" Value="0.95"/>
+                            <Setter Property="Opacity" Value="0.8"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

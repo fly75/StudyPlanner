@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             x:Class="MauiApp16.Views.HelpPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0"
+                Padding="20,16"
+                StrokeThickness="0"
+                Background="{StaticResource PrimaryGradient}">
+            <Border.StrokeShape>
+                <!-- Порядок кутів: TopLeft, TopRight, BottomRight, BottomLeft -->
+                <RoundRectangle CornerRadius="0,0,24,24" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="4">
+                <Label Text="📖 Довідник"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource SurfaceLight}"
+                       HorizontalOptions="Center"/>
+                <Label Text="Повний опис функцій Study Planner"
+                       FontSize="13"
+                       TextColor="{DynamicResource White}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Список статей -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,12" Spacing="10"
+                                 BindableLayout.ItemsSource="{Binding Articles}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="vm:HelpArticle">
+
+                        <Frame CornerRadius="18"
+                               Padding="0"
+                               HasShadow="False"
+                               BackgroundColor="{DynamicResource Surface}">
+
+                            <VerticalStackLayout Spacing="0">
+
+                                <!-- ── Заголовок статті (тапабельний) ── -->
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      ColumnSpacing="12"
+                                      Padding="18,14">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HelpViewModel}},
+                                                      Path=ToggleArticleCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Grid.GestureRecognizers>
+
+                                    <Label Grid.Column="0"
+                                           Text="{Binding Emoji}"
+                                           FontSize="26"
+                                           VerticalOptions="Center"/>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2"
+                                                         VerticalOptions="Center">
+                                        <Label Text="{Binding Title}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource TextPrimary}"/>
+                                        <Label Text="{Binding SubTitle}"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource TextSecondary}"/>
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Column="2"
+                                           Text="{Binding ArrowIcon}"
+                                           FontSize="14"
+                                           TextColor="{DynamicResource Primary}"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,4,0"/>
+                                </Grid>
+
+                                <!-- ── Розгорнутий вміст ── -->
+                                <VerticalStackLayout IsVisible="{Binding IsExpanded}"
+                                                     Padding="18,0,18,16"
+                                                     Spacing="0">
+                                    <!-- Роздільник -->
+                                    <BoxView Color="{DynamicResource Gray300}"
+                                             HeightRequest="1"
+                                             Margin="0,0,0,12"/>
+
+                                    <Label Text="{Binding Content}"
+                                           FontSize="14"
+                                           TextColor="{DynamicResource TextPrimary}"
+                                           LineBreakMode="WordWrap"
+                                           LineHeight="1.5"/>
+                                </VerticalStackLayout>
+
+                            </VerticalStackLayout>
+                        </Frame>
+
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

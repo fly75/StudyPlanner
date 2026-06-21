@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
+             x:Class="MauiApp16.Views.RegistrationPage"
+             BackgroundColor="{DynamicResource Background}"
+             Title="Реєстрація">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Заголовок -->
+            <VerticalStackLayout Spacing="8" Margin="0,20,0,10">
+                <Label Text="👤" FontSize="56" HorizontalOptions="Center"/>
+                <Label Text="Створити акаунт"
+                       FontSize="26" FontAttributes="Bold"
+                       TextColor="{DynamicResource TextPrimary}"
+                       HorizontalOptions="Center"/>
+                <Label Text="Заповніть дані для реєстрації"
+                       FontSize="14"
+                       TextColor="{DynamicResource TextSecondary}"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Аватар (з можливістю редагувати при натисканні) -->
+            <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Grid HorizontalOptions="Center">
+                    <Frame CornerRadius="60"
+                           WidthRequest="120" HeightRequest="120"
+                           Padding="0" HasShadow="True"
+                           BackgroundColor="{DynamicResource Surface}"
+                           HorizontalOptions="Center">
+                        <Image Source="{Binding AvatarSource}"
+                               Aspect="AspectFill"
+                               WidthRequest="120" HeightRequest="120">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding EditAvatarCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Frame>
+                    <!-- Значок редагування (видно якщо фото вибрано) -->
+                    <Frame CornerRadius="16" WidthRequest="32" HeightRequest="32"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{DynamicResource Primary}"
+                           HorizontalOptions="End" VerticalOptions="End"
+                           Margin="0,0,2,2"
+                           IsVisible="{Binding HasAvatar}">
+                        <Label Text="✏️" FontSize="14"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding EditAvatarCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Frame>
+                </Grid>
+                <Button Text="📷 Обрати фото"
+                        Command="{Binding PickAvatarCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{DynamicResource Primary}"
+                        BorderColor="{DynamicResource Primary}"
+                        BorderWidth="1.5"
+                        CornerRadius="20"
+                        FontSize="14"
+                        HeightRequest="38"
+                        WidthRequest="160"
+                        HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Секція: Акаунт -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="🔐 Дані для входу" FontSize="15" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Email -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📧 Email *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="example@email.com"
+                                   Text="{Binding Email}"
+                                   Keyboard="Email"
+                                   MaxLength="50"
+                                   IsSpellCheckEnabled="False"
+                                   IsTextPredictionEnabled="False"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Пароль -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="🔒 Пароль *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="Мінімум 6 символів"
+                                   Text="{Binding Password}"
+                                   IsPassword="True"
+                                   MaxLength="64"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Підтвердження пароля -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="🔒 Підтвердіть пароль *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="Повторіть пароль"
+                                   Text="{Binding ConfirmPassword}"
+                                   IsPassword="True"
+                                   MaxLength="64"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Секція: Профіль -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="👤 Особисті дані" FontSize="15" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Прізвище -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Прізвище *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="Введіть прізвище"
+                                   Text="{Binding LastName}"
+                                   MaxLength="50"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Ім'я -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Ім'я *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="Введіть ім'я"
+                                   Text="{Binding FirstName}"
+                                   MaxLength="50"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Дата народження -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📅 Дата народження"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}" />
+                        <Frame CornerRadius="12"
+                               Padding="10,12"
+                               HasShadow="False"
+                               BorderColor="{DynamicResource Gray300}"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Grid>
+                                <!-- Видимий текст -->
+                                <Label Text="{Binding BirthDate, StringFormat='{0:dd.MM.yyyy}'}"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       VerticalOptions="Center"
+                                       Margin="15,0"
+                                       InputTransparent="True"/>
+                                <!-- Невидимий DatePicker поверх усього -->
+                                <DatePicker x:Name="RegBirthDatePicker"
+                                            Date="{Binding BirthDate, Mode=TwoWay}"
+                                            Format="dd.MM.yyyy"
+                                            Opacity="0.01"
+                                            BackgroundColor="Transparent"
+                                            HorizontalOptions="Fill"
+                                            VerticalOptions="Fill"/>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Номер телефону -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📱 Номер телефону" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="XXX XXX XX XX"
+                                   Text="{Binding PhoneNumber}"
+                                   Keyboard="Telephone"
+                                   MaxLength="16"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Країна -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="🌍 Країна"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}" />
+                        <Frame CornerRadius="12"
+                               Padding="10,0"
+                               HasShadow="False"
+                               BorderColor="{DynamicResource Gray300}"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Picker x:Name="RegCountryPicker"
+                                        Grid.Column="0"
+                                        Title="Оберіть країну"
+                                        TitleColor="{DynamicResource Gray500}"
+                                        TextColor="{DynamicResource TextPrimary}"
+                                        BackgroundColor="Transparent"
+                                        ItemsSource="{Binding Countries}"
+                                        SelectedItem="{Binding Country}"
+                                        HorizontalOptions="FillAndExpand" 
+                                        Margin="5,0"/>
+                                <Label Grid.Column="1"
+                                       Text="▼"
+                                       FontSize="12"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,5,0"
+                                       TextColor="{DynamicResource Gray500}" />
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Помилка -->
+            <Frame CornerRadius="12" Padding="15" HasShadow="False"
+                   BackgroundColor="#FFEBEE"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="{StaticResource Error}"
+                       FontSize="14"
+                       HorizontalTextAlignment="Center"/>
+            </Frame>
+
+            <!-- Кнопки -->
+            <Button Text="✅ Створити акаунт"
+                    Command="{Binding RegisterCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="{DynamicResource Primary}"
+                    TextColor="{DynamicResource SurfaceLight}"
+                    FontSize="18" FontAttributes="Bold"
+                    HeightRequest="55"/>
+
+            <Button Text="← Назад"
+                    Command="{Binding BackCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{DynamicResource Primary}"
+                    BorderColor="{DynamicResource Primary}"
+                    BorderWidth="1.5"
+                    CornerRadius="12"
+                    FontSize="16"
+                    HeightRequest="45"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{DynamicResource Primary}"
+                               HeightRequest="40" Margin="0,5,0,20"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

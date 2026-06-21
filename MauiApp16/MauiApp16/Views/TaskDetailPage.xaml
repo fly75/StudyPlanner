@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             xmlns:models="clr-namespace:MauiApp16.Models"
+             x:Class="MauiApp16.Views.TaskDetailPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Header -->
+            <Frame CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   Background="{StaticResource PrimaryGradient}"
+                   Margin="0,10">
+                <Label Text="{Binding Title}" 
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource SurfaceLight}"
+                       HorizontalTextAlignment="Center"/>
+            </Frame>
+
+            <!-- Task Form -->
+            <Frame CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   Margin="0,10">
+                <VerticalStackLayout Spacing="20">
+
+                    <!-- Title Input -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📝 Назва завдання *" 
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" 
+                               Padding="0" 
+                               HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Placeholder="Введіть назву завдання" 
+                                   Text="{Binding Task.Title}"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent"
+                                   Margin="15,0"
+                                   FontSize="16"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Description Input -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📄 Опис (необов'язково)" 
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" 
+                               Padding="15" 
+                               HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Editor Placeholder="Додайте детальний опис завдання..." 
+                                    Text="{Binding Task.Description}"
+                                    TextColor="{DynamicResource TextPrimary}"
+                                    PlaceholderColor="{DynamicResource Gray500}"
+                                    BackgroundColor="Transparent"
+                                    HeightRequest="120"
+                                    FontSize="16"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1"
+                             Margin="0,10"/>
+
+                    <!-- Deadline Section -->
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="📅 Дедлайн" 
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+
+                            <!-- Date Picker -->
+                            <Frame Grid.Column="0"
+                                   CornerRadius="12" 
+                                   Padding="0" 
+                                   HasShadow="False"
+                                   BackgroundColor="{DynamicResource Surface}">
+                                <VerticalStackLayout Spacing="0">
+                                    <Label Text="Дата"
+                                           FontSize="11"
+                                           TextColor="{DynamicResource TextSecondary}"
+                                           Margin="15,8,15,0"/>
+                                    <DatePicker Date="{Binding Task.Deadline}" 
+                                                Format="dd.MM.yyyy"
+                                                TextColor="{DynamicResource Primary}"
+                                                BackgroundColor="Transparent"
+                                                Margin="15,0,15,8"
+                                                FontSize="16"
+                                                FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- Time Picker -->
+                            <Frame Grid.Column="1"
+                                   CornerRadius="12" 
+                                   Padding="0" 
+                                   HasShadow="False"
+                                   BackgroundColor="{DynamicResource Surface}">
+                                <VerticalStackLayout Spacing="0">
+                                    <Label Text="Час"
+                                           FontSize="11"
+                                           TextColor="{DynamicResource TextSecondary}"
+                                           Margin="15,8,15,0"/>
+                                    <TimePicker Time="{Binding Task.Deadline, Converter={StaticResource DateTimeToTimeConverter}}"
+                                                Format="HH:mm"
+                                                TextColor="{DynamicResource Primary}"
+                                                BackgroundColor="Transparent"
+                                                Margin="15,0,15,8"
+                                                FontSize="16"
+                                                FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                            </Frame>
+
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1"
+                             Margin="0,10"/>
+
+                    <!-- Priority Section -->
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="🎯 Пріоритет" 
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" 
+                               Padding="0" 
+                               HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Picker SelectedItem="{Binding Task.Priority, Mode=TwoWay}"
+                                    TextColor="{DynamicResource TextPrimary}"
+                                    TitleColor="{DynamicResource TextSecondary}"
+                                    BackgroundColor="Transparent"
+                                    Margin="15,0"
+                                    FontSize="16">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type models:TaskPriority}">
+                                        <models:TaskPriority>Low</models:TaskPriority>
+                                        <models:TaskPriority>Medium</models:TaskPriority>
+                                        <models:TaskPriority>High</models:TaskPriority>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1"
+                             Margin="0,10"/>
+
+                    <!-- Tags Section -->
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="🏷️ Теги" 
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+
+                        <!-- Сітка тегів -->
+                        <FlexLayout BindableLayout.ItemsSource="{Binding AvailableTags}"
+                                    Wrap="Wrap"
+                                    Direction="Row"
+                                    JustifyContent="Start"
+                                    AlignItems="Center">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:TagItem">
+                                    <Frame Margin="4"
+                                           Padding="12,8"
+                                           CornerRadius="20"
+                                           HasShadow="False"
+                                           BackgroundColor="{Binding IsSelected,
+                                               Converter={StaticResource BoolToTagColorConverter}}">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TaskDetailViewModel}},
+                                                          Path=ToggleTagCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                        </Frame.GestureRecognizers>
+                                        <Label Text="{Binding DisplayName}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding IsSelected,
+                                                   Converter={StaticResource BoolToTagTextConverter}}"/>
+                                    </Frame>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Status Toggle (for existing tasks) -->
+                    <Frame CornerRadius="12"
+                           Padding="15"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Accent}"
+                           IsVisible="{Binding IsNewTask, Converter={StaticResource InvertedBoolConverter}}"
+                           Opacity="0.75">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="✅" 
+                                   FontSize="24"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" 
+                                                VerticalOptions="Center"
+                                                Margin="10,0">
+                                <Label Text="Позначити як виконане" 
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource SurfaceLight}"/>
+                                <Label Text="Завдання буде переміщено до виконаних" 
+                                       FontSize="12"
+                                       TextColor="{DynamicResource SurfaceLight}"/>
+                            </VerticalStackLayout>
+                            <Switch Grid.Column="2"
+                                    IsToggled="{Binding Task.Status, Converter={StaticResource TaskStatusToBoolConverter}}"
+                                    OnColor="{DynamicResource Primary}"
+                                    VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <VerticalStackLayout Spacing="12">
+                <!-- Save Button -->
+                <Button Text="💾 Зберегти завдання" 
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                        BackgroundColor="{DynamicResource Secondary}"
+                        TextColor="{DynamicResource SurfaceLight}"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        HeightRequest="55"/>
+
+                <!-- Delete Button (for existing tasks) -->
+                <Button Text="🗑️ Видалити завдання" 
+                        Command="{Binding DeleteCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                        IsVisible="{Binding IsNewTask, Converter={StaticResource InvertedBoolConverter}}"
+                        BackgroundColor="{StaticResource Error}"
+                        TextColor="White"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        HeightRequest="55"/>
+            </VerticalStackLayout>
+
+            <!-- Activity Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                             IsVisible="{Binding IsBusy}"
+                             Color="{DynamicResource Primary}"
+                             HeightRequest="40"
+                             Margin="0,20"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

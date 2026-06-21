@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MauiApp16.Models"
+             x:Class="MauiApp16.Views.DashboardPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ХЕДЕР  -->
+        <Frame Grid.Row="0"
+               CornerRadius="0" Padding="20,50,20,16"
+               HasShadow="True" BackgroundColor="{DynamicResource Surface}">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+
+                <!-- Назва -->
+                <Label Grid.Column="0"
+                       Text="📚 Study Planner"
+                       FontSize="20" FontAttributes="Bold"
+                       TextColor="{DynamicResource TextPrimary}"
+                       VerticalOptions="Center"/>
+
+                <!-- ── Іконка QR-коду ── -->
+                <Grid Grid.Column="1" WidthRequest="44" HeightRequest="44">
+                    <Frame CornerRadius="22" WidthRequest="44" HeightRequest="44"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{DynamicResource Background}">
+                        <Image Source="{DynamicResource QrCodeIcon}"
+                               WidthRequest="20" HeightRequest="20"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnQrIconTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Frame>
+                </Grid>
+
+                <!-- ── Іконка Довідника ── -->
+                <Grid Grid.Column="2" WidthRequest="44" HeightRequest="44">
+                    <Frame CornerRadius="22" WidthRequest="44" HeightRequest="44"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{DynamicResource Background}">
+                        <Label Text="📖" FontSize="22" Padding="0,0,0,6"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnHelpIconTapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Frame>
+                </Grid>
+               
+                <!-- Дзвіночок сповіщень -->
+                <Grid Grid.Column="3" WidthRequest="44" HeightRequest="44">
+                    <Frame CornerRadius="22" WidthRequest="44" HeightRequest="44"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{DynamicResource Background}">
+                        <Label Text="🔔" FontSize="22" Padding="0,0,0,2"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleNotificationPanelCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Frame>
+                    <!-- Бейдж непрочитаних -->
+                    <Frame IsVisible="{Binding HasUnreadNotifications}"
+                           CornerRadius="12" WidthRequest="22" HeightRequest="22"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="#FF5252"
+                           HorizontalOptions="End" VerticalOptions="Start"
+                           Margin="0,-4,-4,0">
+                        <Label Text="{Binding UnreadNotificationCount}"
+                               FontSize="10" FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                </Grid>
+                
+                <!-- Аватар користувача -->
+                <Grid Grid.Column="4" WidthRequest="44" HeightRequest="44">
+                    <Frame CornerRadius="22" WidthRequest="44" HeightRequest="44"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{DynamicResource Primary}">
+                        <Image Source="{Binding AvatarSource}"
+                               Aspect="AspectFill"
+                               WidthRequest="44" HeightRequest="44">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleUserMenuCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Frame>
+                </Grid>
+
+            </Grid>
+        </Frame>
+
+        <!-- ОСНОВНИЙ ЗМІСТ -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- Мотиваційне повідомлення -->
+                <Frame Style="{StaticResource HighlightFrame}">
+                    <Label Text="{Binding MotivationalMessage}"
+                           TextColor="{StaticResource SurfaceLight}"
+                           FontSize="20" FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+                </Frame>
+
+                <!-- Загальний прогрес -->
+                <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                       BackgroundColor="{DynamicResource Surface}" Margin="0,10">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="📊 Загальний прогрес"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextSecondary}"/>
+                        <ProgressBar Progress="{Binding OverallProgress, Converter={StaticResource PercentToDecimalConverter}}"
+                                     ProgressColor="{DynamicResource Secondary}"
+                                     HeightRequest="12"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="Виконано завдань"
+                                   FontSize="14" TextColor="{DynamicResource TextSecondary}"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding OverallProgress, StringFormat='{0:F1}%'}"
+                                   FontSize="24" FontAttributes="Bold"
+                                   TextColor="{DynamicResource Secondary}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Найближчі дедлайни -->
+                <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                       BackgroundColor="{DynamicResource Surface}" Margin="0,10">
+                    <VerticalStackLayout Spacing="15">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="⏰ Найближчі дедлайни"
+                                   FontSize="18" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Grid.Column="1" Text="7 днів"
+                                   FontSize="14" TextColor="{DynamicResource TextSecondary}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+
+                        <CollectionView ItemsSource="{Binding UpcomingTasks}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame CornerRadius="12" Padding="15" Margin="0,8"
+                                           HasShadow="False"
+                                           BackgroundColor="{DynamicResource Surface}"
+                                           BorderColor="{DynamicResource Gray300}">
+                                        <Grid ColumnDefinitions="8,*,Auto" ColumnSpacing="12">
+                                            <BoxView Grid.Column="0"
+                                                     BackgroundColor="{Binding CourseColor}"
+                                                     CornerRadius="4" WidthRequest="8"/>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                                <Label Text="{Binding Title}"
+                                                       FontAttributes="Bold" FontSize="16"
+                                                       TextColor="{DynamicResource TextPrimary}"/>
+                                                <Label Text="{Binding CourseName}"
+                                                       FontSize="13" TextColor="{DynamicResource TextSecondary}"/>
+                                                <Label Text="{Binding Deadline, StringFormat='📅 {0:dd.MM.yyyy HH:mm}'}"
+                                                       FontSize="13" TextColor="{DynamicResource Secondary}"
+                                                       FontAttributes="Bold"/>
+                                            </VerticalStackLayout>
+                                            <Frame Grid.Column="2"
+                                                   BackgroundColor="{Binding Priority, Converter={StaticResource PriorityToColorConverter}}"
+                                                   HasShadow="False" CornerRadius="8" Padding="10,5"
+                                                   VerticalOptions="Start">
+                                                <Label Text="{Binding Priority, Converter={StaticResource PriorityToStringConverter}}"
+                                                       FontSize="11" FontAttributes="Bold"
+                                                       TextColor="White" HorizontalOptions="Center"/>
+                                            </Frame>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout Padding="30" Spacing="10">
+                                    <Label Text="🎉" FontSize="40" HorizontalOptions="Center"/>
+                                    <Label Text="Немає найближчих завдань"
+                                           FontSize="14" TextColor="{DynamicResource TextSecondary}"
+                                           HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Швидкі дії -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="➕ Додати завдання"
+                            Command="{Binding QuickAddTaskCommand}"
+                            TextColor="{DynamicResource SurfaceLight}"
+                            BackgroundColor="{DynamicResource Primary}"
+                            HeightRequest="55"/>
+                    <Button Grid.Column="1" Text="📚 Мої предмети"
+                            Command="{Binding GoToCoursesCommand}"
+                            TextColor="{DynamicResource SurfaceLight}"
+                            Style="{StaticResource SecondaryButton}"
+                            HeightRequest="55"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ОВЕРЛЕЙ: МЕНЮ КОРИСТУВАЧА -->
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding IsUserMenuVisible}">
+            <!-- Прозорий фон для закриття -->
+            <BoxView BackgroundColor="#50000000" Opacity="1">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseUserMenuCommand}"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <!-- Картка меню -->
+            <Frame CornerRadius="20" Padding="0" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   HorizontalOptions="End" VerticalOptions="Start"
+                   Margin="0,90,15,0" WidthRequest="260">
+                <VerticalStackLayout Spacing="0">
+
+                    <!-- Шапка -->
+                    <VerticalStackLayout Padding="20,16,20,12" Spacing="4"
+                                         BackgroundColor="{DynamicResource Surface}">
+                        <Label Text="{Binding UserDisplayName}"
+                               FontSize="16" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Label Text="Study Planner" FontSize="13"
+                               TextColor="{DynamicResource TextSecondary}"/>
+                    </VerticalStackLayout>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Профіль -->
+                    <Grid Padding="20,14" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Label Grid.Column="0" Text="👤" FontSize="20" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Профіль та доступи"
+                               FontSize="15" TextColor="{DynamicResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Налаштування -->
+                    <Grid Padding="20,14" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToSettingsCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Label Grid.Column="0" Text="⚙️" FontSize="20" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Налаштування"
+                               FontSize="15" TextColor="{DynamicResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Вийти -->
+                    <Grid Padding="20,14" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LogoutCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Label Grid.Column="0" Text="🚪" FontSize="20" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Вийти"
+                               FontSize="15" TextColor="{StaticResource Error}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+
+        <!-- ОВЕРЛЕЙ: ПАНЕЛЬ СПОВІЩЕНЬ -->
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding IsNotificationPanelVisible}">
+            <!-- Фон закриття -->
+            <BoxView BackgroundColor="#50000000" Opacity="1">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseNotificationPanelCommand}"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <!-- Панель -->
+            <Frame CornerRadius="20" Padding="0" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   HorizontalOptions="End" VerticalOptions="Start"
+                   Margin="0,90,15,0" WidthRequest="320" MaximumHeightRequest="500">
+                <Grid RowDefinitions="Auto,Auto,*">
+
+                    <!-- Заголовок -->
+                    <Grid Grid.Row="0" Padding="20,16" ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Повідомлення"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="✕"
+                               FontSize="20" TextColor="{DynamicResource TextSecondary}"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CloseNotificationPanelCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <!-- Фільтр "Непрочитані" -->
+                    <Grid Grid.Row="1" Padding="20,4,20,12" ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <CheckBox Grid.Column="0"
+                                  IsChecked="{Binding ShowUnreadOnly}"
+                                  Color="{DynamicResource Primary}"/>
+                        <Label Grid.Column="1" Text="Непрочитані"
+                               FontSize="14" TextColor="{DynamicResource TextPrimary}"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    
+                    <!-- Список сповіщень -->
+                    <ScrollView Grid.Row="2" MaximumHeightRequest="350">
+                        <VerticalStackLayout>
+                            <CollectionView ItemsSource="{Binding Notifications}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:AppNotification">
+                                        <Grid Padding="0">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                                              Path=BindingContext.MarkNotificationReadCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Grid.GestureRecognizers>
+
+                                            <VerticalStackLayout Padding="20,12" Spacing="4"
+                                                BackgroundColor="{Binding IsRead, 
+                                                    Converter={StaticResource BoolToNotificationColorConverter}}">
+                                                <Label Text="{Binding Title}"
+                                                       FontSize="14" FontAttributes="Bold"
+                                                       TextColor="{DynamicResource Primary}"
+                                                       LineBreakMode="WordWrap"/>
+                                                <Label Text="{Binding Message}"
+                                                       FontSize="12" TextColor="{DynamicResource TextSecondary}"
+                                                       LineBreakMode="WordWrap"/>
+                                                <Label Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                                       FontSize="11" TextColor="{DynamicResource Gray500}"/>
+                                            </VerticalStackLayout>
+
+                                            <BoxView Color="{DynamicResource Gray300}"
+                                                     HeightRequest="1"
+                                                     VerticalOptions="End"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                                <CollectionView.EmptyView>
+                                    <Label Text="Список повідомлень порожній."
+                                           FontSize="14" FontAttributes="Italic"
+                                           TextColor="{DynamicResource TextSecondary}"
+                                           HorizontalOptions="Center"
+                                           Margin="0,20" Padding="20"/>
+                                </CollectionView.EmptyView>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </ScrollView>
+
+                </Grid>
+            </Frame>
+        </Grid>
+
+        <!-- QR-код OVERLAY (схований за замовчуванням) -->
+        <Grid x:Name="QrOverlay"
+              Grid.RowSpan="2"
+              IsVisible="False"
+              BackgroundColor="#BB000000"
+              ZIndex="100">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnQrOverlayBackgroundTapped"/>
+            </Grid.GestureRecognizers>
+
+            <!-- Контейнер QR-коду -->
+            <Frame x:Name="QrPopupFrame"
+                   CornerRadius="24"
+                   Padding="28,24"
+                   HasShadow="True"
+                   WidthRequest="280"
+                   BackgroundColor="{DynamicResource Surface}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Заголовок -->
+                    <Label Text="📲 Завантажити Study Planner"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+
+                    <!-- QR-placeholder -->
+                    <Frame x:Name="QrCodeFrame"
+                           CornerRadius="12"
+                           Padding="12"
+                           HasShadow="False"
+                           BackgroundColor="White"
+                           WidthRequest="200" HeightRequest="200"
+                           HorizontalOptions="Center">
+                        <Image Source="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                               WidthRequest="176"
+                               HeightRequest="176"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Frame>
+
+                    <!-- Підпис -->
+                    <Label Text="Скануйте для завантаження додатку"
+                           FontSize="13"
+                           TextColor="{DynamicResource TextSecondary}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+
+                    <!-- Кнопка закрити -->
+                    <Button Text="✖ Закрити"
+                            BackgroundColor="Transparent"
+                            TextColor="{DynamicResource Primary}"
+                            BorderColor="{DynamicResource Primary}"
+                            BorderWidth="1.5"
+                            FontSize="15"
+                            HeightRequest="44"
+                            Clicked="OnQrCloseClicked"/>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+        
+    </Grid>
+</ContentPage>

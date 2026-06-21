@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:MauiApp16.Converters"
+             x:Class="MauiApp16.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Converters -->
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter" />
+            <converters:PercentToDecimalConverter x:Key="PercentToDecimalConverter" />
+            <converters:TaskStatusToIconConverter x:Key="TaskStatusToIconConverter" />
+            <converters:TaskNotCompletedConverter x:Key="TaskNotCompletedConverter" />
+            <converters:PriorityToStringConverter x:Key="PriorityToStringConverter" />
+            <converters:PriorityToColorConverter x:Key="PriorityToColorConverter" />
+            <converters:DateTimeToTimeConverter x:Key="DateTimeToTimeConverter" />
+            <converters:TaskStatusToBoolConverter x:Key="TaskStatusToBoolConverter" />
+            <converters:ValueToProgressConverter x:Key="ValueToProgressConverter" />
+            <converters:ProgressWidthConverter x:Key="ProgressWidthConverter" />
+            <converters:ColorStringToColorConverter x:Key="ColorStringToColorConverter" />
+            <converters:BoolToFilterColorConverter x:Key="BoolToFilterColorConverter" />
+            <converters:BoolToTodayColorConverter x:Key="BoolToTodayColorConverter"/>
+            <converters:BoolToTodayTextConverter  x:Key="BoolToTodayTextConverter"/>
+            <converters:BoolToTagColorConverter x:Key="BoolToTagColorConverter"/>
+            <converters:BoolToTagTextConverter  x:Key="BoolToTagTextConverter"/>
+            <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
+            <converters:BoolToNotificationColorConverter x:Key="BoolToNotificationColorConverter"/>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

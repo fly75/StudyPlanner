@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             xmlns:models="clr-namespace:MauiApp16.Models"
+             x:Class="MauiApp16.Views.CalendarPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16,20,16,0">
+
+        <!-- Заголовок -->
+        <Frame Grid.Row="0"
+               CornerRadius="20" Padding="20" HasShadow="True"
+               Background="{StaticResource PrimaryGradient}" Margin="0,0,0,12">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                <!-- Стрілка назад -->
+                <Frame Grid.Column="0"
+                       BackgroundColor="#33FFFFFF">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PreviousWeekCommand}"/>
+                            </Frame.GestureRecognizers>
+                            <Label Text="◀" FontSize="18"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   TextColor="White"/>
+                </Frame>
+
+                <!-- Назва тижня + кнопка "Сьогодні" -->
+                <VerticalStackLayout Grid.Column="1" Spacing="4"
+                             HorizontalOptions="Center">
+                    <Label Text="📅 Тижневий календар"
+                           FontSize="16" FontAttributes="Bold"
+                           TextColor="{DynamicResource SurfaceLight}"
+                           HorizontalOptions="Center"/>
+                    <Label Text="{Binding WeekRangeTitle}"
+                           FontSize="13"
+                           TextColor="White"
+                           Opacity="0.75"
+                           HorizontalOptions="Center"/>
+                    <Frame CornerRadius="10" Padding="10,4"
+                           HasShadow="False"
+                           BackgroundColor="#33FFFFFF"
+                           HorizontalOptions="Center">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TodayCommand}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Сьогодні" FontSize="11"
+                               TextColor="{DynamicResource SurfaceLight}"
+                               FontAttributes="Bold"/>
+                    </Frame>
+                </VerticalStackLayout>
+
+                <!-- Стрілка вперед -->
+                <Frame Grid.Column="2"
+                       BackgroundColor="#33FFFFFF">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NextWeekCommand}"/>
+                            </Frame.GestureRecognizers>
+                            <Label Text="▶" FontSize="18"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   TextColor="White"/>
+                </Frame>
+
+            </Grid>
+        </Frame>
+
+        <!-- Заголовки днів тижня (Пн–Нд) -->
+        <ScrollView Grid.Row="1" Orientation="Neither" Margin="0,0,0,8">
+            <HorizontalStackLayout BindableLayout.ItemsSource="{Binding WeekDays}"
+                           Spacing="4">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:WeekDay">
+                        <Frame Padding="8,8" HasShadow="False"
+                       CornerRadius="12" Margin="0"
+                       WidthRequest="52"
+                       BackgroundColor="{Binding IsToday,
+                           Converter={StaticResource BoolToTodayColorConverter}}">
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                <Label Text="{Binding DayName}"
+                               FontSize="11" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"
+                               HorizontalOptions="Center"/>
+                                <Label Text="{Binding DayNumber}"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{Binding IsToday,
+                                   Converter={StaticResource BoolToTodayTextConverter}}"
+                               HorizontalOptions="Center"/>
+                                <Ellipse WidthRequest="6" HeightRequest="6"
+                                 Fill="{DynamicResource Primary}"
+                                 HorizontalOptions="Center"
+                                 IsVisible="{Binding HasTasks}"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Список завдань по днях -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Spacing="0"
+                                 BindableLayout.ItemsSource="{Binding WeekDays}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:WeekDay">
+                        <VerticalStackLayout Spacing="6" Margin="0,0,0,12">
+
+                            <!-- Заголовок дня (показуємо тільки якщо є завдання) -->
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10"
+                                  IsVisible="{Binding HasTasks}">
+                                <Frame Grid.Column="0"
+                                       CornerRadius="10" Padding="10,6"
+                                       HasShadow="False"
+                                       BackgroundColor="{Binding IsToday,
+                                           Converter={StaticResource BoolToTodayColorConverter}}">
+                                    <Label FontSize="13" FontAttributes="Bold"
+                                           TextColor="{Binding IsToday,
+                                               Converter={StaticResource BoolToTodayTextConverter}}">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="DayName"/>
+                                                <Binding Path="DayNumber"/>
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </Frame>
+                                <BoxView Grid.Column="1"
+                                         Color="{DynamicResource Gray300}"
+                                         HeightRequest="1"
+                                         VerticalOptions="Center"/>
+                            </Grid>
+
+                            <!-- Завдання дня -->
+                            <VerticalStackLayout Spacing="6"
+                                                 BindableLayout.ItemsSource="{Binding Tasks}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:TaskModel">
+                                        <Frame CornerRadius="16" Padding="14,12"
+                                               HasShadow="False"
+                                               BackgroundColor="{DynamicResource Surface}"
+                                               Margin="0,0,0,0">
+                                            <Frame.GestureRecognizers>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}},
+                                                              Path=TaskSelectedCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Frame.GestureRecognizers>
+
+                                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                                                <!-- Кольорова смужка предмету -->
+                                                <BoxView Grid.Column="0"
+                                                         WidthRequest="4"
+                                                         CornerRadius="2"
+                                                         Color="{Binding CourseColor,
+                                                             Converter={StaticResource ColorStringToColorConverter}}"
+                                                         VerticalOptions="Fill"/>
+
+                                                <!-- Назва + предмет + теги -->
+                                                <VerticalStackLayout Grid.Column="1" Spacing="3">
+                                                    <Label Text="{Binding Title}"
+                                                           FontSize="15" FontAttributes="Bold"
+                                                           TextColor="{DynamicResource TextPrimary}"
+                                                           LineBreakMode="TailTruncation"/>
+                                                    <Label Text="{Binding CourseName}"
+                                                           FontSize="12"
+                                                           TextColor="{DynamicResource TextSecondary}"
+                                                           LineBreakMode="TailTruncation"/>
+                                                    <Label Text="{Binding Deadline, StringFormat='{0:HH:mm}'}"
+                                                           FontSize="11"
+                                                           TextColor="{DynamicResource Secondary}"/>
+
+                                                    <!-- Теги під часом -->
+                                                    <FlexLayout BindableLayout.ItemsSource="{Binding Tags}"
+                                                                Wrap="Wrap"
+                                                                Direction="Row">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate x:DataType="x:String">
+                                                                <Frame Margin="0,2,4,0"
+                                                                       Padding="8,3"
+                                                                       CornerRadius="8"
+                                                                       HasShadow="False"
+                                                                       BackgroundColor="{DynamicResource Accent}">
+                                                                    <Label Text="{Binding .}"
+                                                                           FontSize="10"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="{DynamicResource Gray900}"/>
+                                                                </Frame>
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </FlexLayout>
+                                                </VerticalStackLayout>
+
+                                                <!-- Статус + пріоритет -->
+                                                <VerticalStackLayout Grid.Column="2"
+                                                                     Spacing="4"
+                                                                     HorizontalOptions="End">
+                                                    <Label Text="{Binding Status,
+                                                               Converter={StaticResource TaskStatusToIconConverter}}"
+                                                           FontSize="20"
+                                                           HorizontalOptions="Center"/>
+                                                    <Frame CornerRadius="8" Padding="6,3"
+                                                           HasShadow="False"
+                                                           BackgroundColor="{Binding Priority,
+                                                               Converter={StaticResource PriorityToColorConverter}}">
+                                                        <Label Text="{Binding Priority,
+                                                                   Converter={StaticResource PriorityToStringConverter}}"
+                                                               FontSize="10" FontAttributes="Bold"
+                                                               TextColor="White"/>
+                                                    </Frame>
+                                                </VerticalStackLayout>
+
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

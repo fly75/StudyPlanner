@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp16.Views.ProfilePage"
+             BackgroundColor="{DynamicResource Background}"
+             Title="Мій профіль">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Аватар + ім'я -->
+            <VerticalStackLayout Spacing="12" Margin="0,20,0,0">
+                <Grid HorizontalOptions="Center">
+                    <Frame CornerRadius="70" WidthRequest="140" HeightRequest="140"
+                           Padding="0" HasShadow="True"
+                           BackgroundColor="{DynamicResource Surface}">
+                        <Image Source="{Binding AvatarSource}"
+                               Aspect="AspectFill"
+                               WidthRequest="140" HeightRequest="140">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding EditAvatarCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Frame>
+
+                    <!-- Кнопка вибору фото (тільки в режимі редагування) -->
+                    <Frame CornerRadius="20" WidthRequest="40" HeightRequest="40"
+                           Padding="0" BackgroundColor="{DynamicResource Primary}"
+                           HorizontalOptions="End" VerticalOptions="End"
+                           Margin="0,0,5,5"
+                           IsVisible="{Binding IsEditing}">
+                        <Label Text="📷" FontSize="18"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickAvatarCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Frame>
+
+                    <!-- Кнопка редагування фото (видно якщо є фото і режим редагування) -->
+                    <Frame CornerRadius="20" WidthRequest="40" HeightRequest="40"
+                           Padding="0" BackgroundColor="{DynamicResource Accent}"
+                           HorizontalOptions="Start" VerticalOptions="End"
+                           Margin="5,0,0,5"
+                           IsVisible="{Binding IsEditing}">
+                        <Label Text="✏️" FontSize="14"
+                               HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding EditAvatarCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Frame>
+                </Grid>
+
+                <Label Text="{Binding DisplayName}"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="{DynamicResource TextPrimary}"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsNotEditing}"/>
+                <Label Text="{Binding CurrentUser.Email}"
+                       FontSize="15"
+                       TextColor="{DynamicResource TextSecondary}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- ═══ РЕЖИМ ПЕРЕГЛЯДУ ═══ -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   IsVisible="{Binding IsNotEditing}">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="Особисті дані" FontSize="16" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Персональний код -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="🪪" FontSize="22" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Персональний код" FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Text="{Binding CurrentUser.PersonalCode, TargetNullValue='Генерується...'}"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Дата народження -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="📅" FontSize="22" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Дата народження" FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Text="{Binding BirthDateDisplay}"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Телефон -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="📱" FontSize="22" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Телефон" FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Text="{Binding CurrentUser.PhoneNumber, TargetNullValue='Не вказано'}"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Країна -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="🌍" FontSize="22" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Країна" FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Text="{Binding CurrentUser.Country, TargetNullValue='Не вказано'}"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                    <!-- Email -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="📧" FontSize="22" VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Email" FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <Label Text="{Binding CurrentUser.Email}"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Кнопка редагування -->
+            <Button Text="✏️ Редагувати профіль"
+                    Command="{Binding EditCommand}"
+                    Style="{StaticResource SecondaryButton}"
+                    IsVisible="{Binding IsNotEditing}"
+                    HeightRequest="50"/>
+
+            <!-- ═══ РЕЖИМ РЕДАГУВАННЯ ═══ -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   IsVisible="{Binding IsEditing}">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="✏️ Редагування профілю" FontSize="16" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Прізвище -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Прізвище *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Text="{Binding EditLastName}"
+                                   MaxLength="50"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   BackgroundColor="Transparent" Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Ім'я -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Ім'я *" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Text="{Binding EditFirstName}"
+                                   MaxLength="50"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   BackgroundColor="Transparent" Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Дата народження -->
+                    <!-- Label показує відформатований текст, прозорий DatePicker перехоплює кліки -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📅 Дата народження" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="10,12" HasShadow="False"
+                               BorderColor="{DynamicResource Gray300}"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Grid>
+                                <!-- Видимий відформатований текст (не перехоплює кліки) -->
+                                <Label Text="{Binding EditBirthDate, StringFormat='{0:dd.MM.yyyy}'}"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       VerticalOptions="Center"
+                                       Margin="15,0"
+                                       InputTransparent="True"/>
+                                <!-- Прозорий DatePicker поверх — відкривається при кліку на поле -->
+                                <DatePicker x:Name="ProfBirthDatePicker"
+                                            Date="{Binding EditBirthDate, Mode=TwoWay}"
+                                            Format="dd.MM.yyyy"
+                                            Opacity="0.01"
+                                            BackgroundColor="Transparent"
+                                            HorizontalOptions="Fill"
+                                            VerticalOptions="Fill"/>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Телефон -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="📱 Телефон" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry Text="{Binding EditPhoneNumber}"
+                                   Keyboard="Telephone"
+                                   Placeholder="ХXX XXX XX XX"
+                                   MaxLength="16"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   BackgroundColor="Transparent" Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Країна -->
+                    <!-- Клік на Frame або на ▼ відкриває список -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="🌍 Країна" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="10,0" HasShadow="False"
+                               BorderColor="{DynamicResource Gray300}"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnProfCountryTapped"/>
+                            </Frame.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Picker x:Name="ProfCountryPicker"
+                                        Grid.Column="0"
+                                        Title="Оберіть країну"
+                                        TitleColor="{DynamicResource Gray500}"
+                                        TextColor="{DynamicResource TextPrimary}"
+                                        BackgroundColor="Transparent"
+                                        ItemsSource="{Binding Countries}"
+                                        SelectedItem="{Binding EditCountry}"
+                                        HorizontalOptions="FillAndExpand"
+                                        Margin="5,0"/>
+                                <Label Grid.Column="1"
+                                       Text="▼"
+                                       FontSize="12"
+                                       VerticalOptions="Center"
+                                       Margin="0,0,5,0"
+                                       TextColor="{DynamicResource Gray500}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnProfCountryTapped"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Помилка -->
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="{StaticResource Error}" FontSize="14"
+                           IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}"/>
+
+                    <!-- Кнопки -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0"
+                                Text="💾 Зберегти"
+                                Command="{Binding SaveCommand}"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="{DynamicResource Primary}"
+                                TextColor="{DynamicResource SurfaceLight}"
+                                HeightRequest="50"/>
+                        <Button Grid.Column="1"
+                                Text="✖ Скасувати"
+                                Command="{Binding CancelEditCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                HeightRequest="50"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

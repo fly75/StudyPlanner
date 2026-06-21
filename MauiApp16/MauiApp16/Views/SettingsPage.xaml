@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             x:Class="MauiApp16.Views.SettingsPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- General Settings -->
+            <Frame CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   Margin="0,10">
+                <VerticalStackLayout Spacing="20">
+
+                    <Label Text="⚙️ Загальні налаштування" 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}" />
+
+                    <!-- Dark Theme Toggle -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                        <Label Grid.Column="0" 
+                               Text="🌙" 
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" 
+                                            VerticalOptions="Center" 
+                                            Spacing="2">
+                            <Label Text="Темна тема" 
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Label Text="Змінити колірну схему додатку" 
+                                   FontSize="14"
+                                   TextColor="{DynamicResource TextSecondary}"
+                                   Margin="0,2"/>
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="2" 
+                                IsToggled="{Binding Settings.IsDarkTheme}"
+                                OnColor="{DynamicResource Primary}"
+                                VerticalOptions="Center"/>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1"
+                             Margin="0,10"/>
+
+                    <!-- Notifications Toggle -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                        <Label Grid.Column="0" 
+                               Text="🔔" 
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" 
+                                            VerticalOptions="Center" 
+                                            Spacing="2">
+                            <Label Text="Сповіщення" 
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Label Text="Отримувати нагадування про дедлайни" 
+                                   FontSize="14"
+                                   TextColor="{DynamicResource TextSecondary}"
+                                   Margin="0,2"/>
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="2" 
+                                IsToggled="{Binding Settings.NotificationsEnabled}"
+                                OnColor="{DynamicResource Primary}"
+                                VerticalOptions="Center"/>
+                    </Grid>
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1"
+                             Margin="0,10"/>
+
+                    <!-- Час нагадування — показуємо тільки якщо сповіщення увімкнені -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15"
+                          IsVisible="{Binding Settings.NotificationsEnabled}">
+                        <Label Grid.Column="0"
+                               Text="⏰"
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                            <Label Text="Нагадувати за"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Picker SelectedIndex="{Binding ReminderIndex}"
+                                    TextColor="{DynamicResource TextPrimary}"
+                                    BackgroundColor="{DynamicResource Background}">
+                                <Picker.Items>
+                                    <x:String>За 7 днів</x:String>
+                                    <x:String>За 3 дні</x:String>
+                                    <x:String>За 1 день</x:String>
+                                    <x:String>За 12 годин</x:String>
+                                    <x:String>За 3 години</x:String>
+                                    <x:String>За 1 годину</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+                    </Grid>
+                    
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Save Button -->
+            <Button Text="💾 Зберегти налаштування" 
+                    Command="{Binding SaveCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="{DynamicResource Secondary}"
+                    TextColor="{DynamicResource SurfaceLight}"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="12"/>
+
+            <!-- Резервне копіювання -->
+            <Frame CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   Margin="0,5">
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Заголовок -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="💾 Резервне копіювання"
+                               FontSize="18" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Label Text="Збережіть або відновіть усі свої дані"
+                               FontSize="13"
+                               TextColor="{DynamicResource TextSecondary}"/>
+                    </VerticalStackLayout>
+
+                    <!-- Інфо про останній бекап -->
+                    <Frame CornerRadius="12" Padding="14,10"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Background}"
+                           BorderColor="Transparent">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="📅" FontSize="22"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding LastBackupInfo}"
+                                   FontSize="13"
+                                   TextColor="{DynamicResource TextSecondary}"
+                                   VerticalOptions="Center"
+                                   LineBreakMode="TailTruncation"/>
+                        </Grid>
+                    </Frame>
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1" Margin="0,4"/>
+
+                    <!-- Кнопки -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                        <!-- Експорт -->
+                        <Button Grid.Column="0"
+                                Text="⬆️ Створити бекап"
+                                Command="{Binding ExportBackupCommand}"
+                                IsEnabled="{Binding IsBusy,
+                                    Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="{DynamicResource Primary}"
+                                TextColor="{DynamicResource SurfaceLight}"
+                                FontSize="14" FontAttributes="Bold"
+                                HeightRequest="52" CornerRadius="12"/>
+
+                        <!-- Імпорт -->
+                        <Button Grid.Column="1"
+                                Text="⬇️ Відновити"
+                                Command="{Binding ImportBackupCommand}"
+                                IsEnabled="{Binding IsBusy,
+                                    Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Primary}"
+                                BorderColor="{DynamicResource Primary}"
+                                BorderWidth="2"
+                                FontSize="14" FontAttributes="Bold"
+                                HeightRequest="52" CornerRadius="12"/>
+                    </Grid>
+
+                    <!-- Підказка -->
+                    <Label FontSize="12"
+                           TextColor="{DynamicResource TextSecondary}"
+                           HorizontalOptions="Center" 
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"
+                           Text="📌 Бекап містить предмети, завдання та статистику.&#10;Паролі не зберігаються - після відновлення увійдіть з тим самим акаунтом." />
+
+                    <BoxView Color="{DynamicResource Gray300}"
+                             HeightRequest="1" Margin="0,8"/>
+
+                    <!-- ── Розширений імпорт ── -->
+                    <Label Text="📥 Розширений імпорт"
+                           FontSize="15" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"/>
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="6">
+
+                        <!-- Злити бекап -->
+                        <Button Grid.Row="0" Grid.Column="0"
+                                Text="🔀 Злити бекап"
+                                Command="{Binding MergeImportBackupCommand}"
+                                IsEnabled="{Binding IsBusy,
+                                    Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Secondary}"
+                                BorderColor="{DynamicResource Secondary}"
+                                BorderWidth="2"
+                                FontSize="13" FontAttributes="Bold"
+                                HeightRequest="52" CornerRadius="12"/>
+
+                        <!-- Імпорт завдання -->
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Text="📄 Імпорт завдань"
+                                Command="{Binding ImportSingleTaskCommand}"
+                                IsEnabled="{Binding IsBusy,
+                                    Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource Tertiary}"
+                                BorderColor="{DynamicResource Tertiary}"
+                                BorderWidth="2"
+                                FontSize="13" FontAttributes="Bold"
+                                HeightRequest="52" CornerRadius="12"/>
+
+                        <Label Grid.Row="1" Grid.Column="0"
+                               TextColor="{DynamicResource TextSecondary}"
+                               FontSize="12" 
+                               LineBreakMode="WordWrap"
+                               HorizontalTextAlignment="Center"
+                               Text="Додає дані бекапу до існуючих (без видалення поточних файлів)."/>
+
+                        <Label Grid.Row="1" Grid.Column="1"
+                               TextColor="{DynamicResource TextSecondary}"
+                               FontSize="12" 
+                               LineBreakMode="WordWrap"
+                               HorizontalTextAlignment="Center"
+                               Text="Імпортує з файлу, створеного через кнопку «Поділитися» у предметі."/>
+                    </Grid>
+                    
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Change Password -->
+            <Frame CornerRadius="20" Padding="20" HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}" Margin="0,10">
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="🔑 Зміна пароля"
+                           FontSize="18" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Поточний пароль -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Поточний пароль" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry IsPassword="True"
+                                   Text="{Binding CurrentPassword}"
+                                   Placeholder="Введіть поточний пароль"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent" Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Новий пароль -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Новий пароль" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry IsPassword="True"
+                                   Text="{Binding NewPassword}"
+                                   Placeholder="Мінімум 6 символів"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent" Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Підтвердження -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Підтвердіть новий пароль" FontSize="14" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                        <Frame CornerRadius="12" Padding="0" HasShadow="False"
+                               BackgroundColor="{DynamicResource Background}">
+                            <Entry IsPassword="True"
+                                   Text="{Binding ConfirmNewPassword}"
+                                   Placeholder="Повторіть новий пароль"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource Gray500}"
+                                   BackgroundColor="Transparent" Margin="15,0"/>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Повідомлення результату -->
+                    <Frame CornerRadius="12" Padding="12" HasShadow="False"
+                           IsVisible="{Binding PasswordChangeMessage, Converter={StaticResource StringNotNullOrEmptyConverter}}"
+                           BackgroundColor="{Binding PasswordChangeSuccess, Converter={StaticResource BoolToTodayColorConverter}}">
+                        <Label Text="{Binding PasswordChangeMessage}"
+                               FontSize="14" HorizontalTextAlignment="Center"
+                               TextColor="{DynamicResource TextPrimary}"/>
+                    </Frame>
+
+                    <Button Text="🔑 Змінити пароль"
+                            Command="{Binding ChangePasswordCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="{DynamicResource Secondary}"
+                            TextColor="{DynamicResource SurfaceLight}"
+                            FontSize="16" HeightRequest="50"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Account Actions -->
+            <Frame CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="👤 Обліковий запис" 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}" />
+
+                    <Button Text="🚪 Вийти з акаунту" 
+                            Command="{Binding LogoutCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Error}"
+                            BorderColor="{StaticResource Error}"
+                            BorderWidth="2"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            HeightRequest="50"
+                            CornerRadius="12"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Danger Zone -->
+            <Frame CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   BackgroundColor="{DynamicResource Surface}"
+                   BorderColor="{StaticResource Error}"
+                   Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+
+                    <Label Text="⚠️ Небезпечна зона" 
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Error}"/>
+
+                    <Label Text="Видалення акаунту незворотне. Всі ваші дані будуть втрачені назавжди."
+                           FontSize="14"
+                           TextColor="{DynamicResource TextSecondary}"
+                           LineBreakMode="WordWrap"/>
+
+                    <Button Text="🗑️ Видалити акаунт назавжди" 
+                            Command="{Binding DeleteAccountCommand}"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="{StaticResource Error}"
+                            TextColor="{DynamicResource SurfaceLight}"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            HeightRequest="50"
+                            CornerRadius="12"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Activity Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                             IsVisible="{Binding IsBusy}"
+                             Color="{DynamicResource Primary}"
+                             HeightRequest="40"
+                             Margin="0,20"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

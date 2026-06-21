@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             xmlns:converters="clr-namespace:MauiApp16.Converters"
+             x:Class="MauiApp16.Views.RecommendationsPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <!-- Весь UI у Grid, щоб ToastContainer накладався поверх -->
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- Рядок 0 — Заголовок -->
+        <Border Grid.Row="0"
+                Padding="20,16"
+                StrokeThickness="0"
+                Background="{StaticResource PrimaryGradient}">
+            <Border.StrokeShape>
+                <!-- Порядок кутів: ВерхнійЛівий, ВерхнійПравий, НижнійПравий, НижнійЛівий -->
+                <RoundRectangle CornerRadius="0,0,24,24" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout Spacing="4">
+                <Label Text="🤖 AI-Рекомендації"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource SurfaceLight}"
+                       HorizontalOptions="Center"/>
+                <Label Text="Персональний навчальний план за хвилину"
+                       FontSize="13"
+                       TextColor="{DynamicResource White}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Рядок 1 — Прогрес-кроки -->
+        <Frame Grid.Row="1"
+               CornerRadius="0"
+               Padding="20,10"
+               HasShadow="False"
+               BackgroundColor="{DynamicResource Surface}"
+               Margin="0,0,0,2">
+            <VerticalStackLayout Spacing="6">
+
+                <!-- Крапки кроків -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+
+                    <Frame CornerRadius="14" WidthRequest="28" HeightRequest="28"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{DynamicResource Primary}">
+                        <Label Text="1" FontSize="13" FontAttributes="Bold"
+                               TextColor="{DynamicResource Gray900}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                    <BoxView Color="{DynamicResource Gray300}" WidthRequest="20" HeightRequest="2"
+                             VerticalOptions="Center"/>
+
+                    <Frame CornerRadius="14" WidthRequest="28" HeightRequest="28"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{Binding IsStep2, Converter={StaticResource BoolToTodayColorConverter}}">
+                        <Label Text="2" FontSize="13" FontAttributes="Bold"
+                               TextColor="{Binding IsStep2, Converter={StaticResource BoolToTodayTextConverter}}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                    <BoxView Color="{DynamicResource Gray300}" WidthRequest="20" HeightRequest="2"
+                             VerticalOptions="Center"/>
+
+                    <Frame CornerRadius="14" WidthRequest="28" HeightRequest="28"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{Binding IsStep3, Converter={StaticResource BoolToTodayColorConverter}}">
+                        <Label Text="3" FontSize="13" FontAttributes="Bold"
+                               TextColor="{Binding IsStep3, Converter={StaticResource BoolToTodayTextConverter}}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                    <BoxView Color="{DynamicResource Gray300}" WidthRequest="20" HeightRequest="2"
+                             VerticalOptions="Center"/>
+
+                    <Frame CornerRadius="14" WidthRequest="28" HeightRequest="28"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{Binding IsStep4, Converter={StaticResource BoolToTodayColorConverter}}">
+                        <Label Text="4" FontSize="13" FontAttributes="Bold"
+                               TextColor="{Binding IsStep4, Converter={StaticResource BoolToTodayTextConverter}}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                    <BoxView Color="{DynamicResource Gray300}" WidthRequest="20" HeightRequest="2"
+                             VerticalOptions="Center"/>
+
+                    <Frame CornerRadius="14" WidthRequest="28" HeightRequest="28"
+                           Padding="0" HasShadow="False"
+                           BackgroundColor="{Binding IsStep5, Converter={StaticResource BoolToTodayColorConverter}}">
+                        <Label Text="5" FontSize="13" FontAttributes="Bold"
+                               TextColor="{Binding IsStep5, Converter={StaticResource BoolToTodayTextConverter}}"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                </HorizontalStackLayout>
+
+                <!-- Текст кроку -->
+                <Label Text="{Binding StepProgressText}"
+                       FontSize="12"
+                       TextColor="{DynamicResource TextSecondary}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Рядок 2 — Вміст кроків (ScrollView) -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="20" Spacing="0">
+
+                <!-- КРОК 1: Предмет та кількість завдань -->
+                <VerticalStackLayout IsVisible="{Binding IsStep1}" Spacing="16">
+
+                    <Label Text="📖 Про ваш предмет"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"/>
+                    <Label Text="Розкажіть нам про предмет, для якого хочете скласти план"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Назва предмету -->
+                    <Frame CornerRadius="14" Padding="16,12"
+                           HasShadow="False" BackgroundColor="{DynamicResource Surface}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Назва предмету *"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Entry Placeholder="Наприклад: Математичний аналіз"
+                                   Text="{Binding SubjectName}"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   PlaceholderColor="{DynamicResource TextSecondary}"
+                                   BackgroundColor="Transparent"
+                                   FontSize="16"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Опис предмету -->
+                    <Frame CornerRadius="14" Padding="16,12"
+                           HasShadow="False" BackgroundColor="{DynamicResource Surface}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Короткий опис (необов'язково)"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Editor Placeholder="Що саме потрібно вивчити? На що зосередитись?"
+                                    Text="{Binding SubjectDescription}"
+                                    TextColor="{DynamicResource TextPrimary}"
+                                    PlaceholderColor="{DynamicResource TextSecondary}"
+                                    BackgroundColor="Transparent"
+                                    FontSize="14"
+                                    AutoSize="TextChanges"
+                                    MinimumHeightRequest="60"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Кількість завдань -->
+                    <Frame CornerRadius="14" Padding="16,12"
+                           HasShadow="False" BackgroundColor="{DynamicResource Surface}">
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="Скільки завдань потрібно?"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+
+                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                  ColumnSpacing="16"
+                                  HorizontalOptions="Fill">
+
+                                <Frame Grid.Column="0"
+                                       CornerRadius="20" WidthRequest="44" HeightRequest="44"
+                                       Padding="0" HasShadow="False"
+                                       BackgroundColor="{DynamicResource Surface}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding DecreaseTaskCountCommand}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Label Text="−" FontSize="22" FontAttributes="Bold"
+                                           TextColor="{DynamicResource Primary}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <VerticalStackLayout Grid.Column="1"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center"
+                                                     Spacing="2">
+                                    <Label Text="{Binding TaskCount}"
+                                           FontSize="32" FontAttributes="Bold"
+                                           TextColor="{DynamicResource Primary}"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="завдань"
+                                           FontSize="13"
+                                           TextColor="{DynamicResource TextSecondary}"
+                                           HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+
+                                <Frame Grid.Column="2"
+                                       CornerRadius="20" WidthRequest="44" HeightRequest="44"
+                                       Padding="0" HasShadow="False"
+                                       BackgroundColor="{DynamicResource Surface}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding IncreaseTaskCountCommand}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Label Text="+" FontSize="22" FontAttributes="Bold"
+                                           TextColor="{DynamicResource Primary}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+                            </Grid>
+
+                            <Label Text="Від 5 до 25 завдань"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+
+                <!-- КРОК 2: Рівень складності -->
+                <VerticalStackLayout IsVisible="{Binding IsStep2}" Spacing="16">
+
+                    <Label Text="⚡ Рівень складності"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"/>
+                    <Label Text="Оберіть відповідний рівень для формування завдань"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Легкий -->
+                    <Frame CornerRadius="16" Padding="20,16"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsDifficultyEasy, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectDifficultyCommand}"
+                                                  CommandParameter="Легкий"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                            <Label Grid.Column="0" Text="🟢" FontSize="28"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Легкий"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsDifficultyEasy, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="Переважно базові завдання, низький/середній пріоритет"
+                                       FontSize="13"
+                                       TextColor="{Binding IsDifficultyEasy, Converter={StaticResource BoolToTagTextConverter}}"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsDifficultyEasy}"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Середній -->
+                    <Frame CornerRadius="16" Padding="20,16"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsDifficultyMedium, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectDifficultyCommand}"
+                                                  CommandParameter="Середній"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                            <Label Grid.Column="0" Text="🟡" FontSize="28"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Середній"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsDifficultyMedium, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="Збалансований план, різноманітні пріоритети"
+                                       FontSize="13"
+                                       TextColor="{Binding IsDifficultyMedium, Converter={StaticResource BoolToTagTextConverter}}"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsDifficultyMedium}"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Складний -->
+                    <Frame CornerRadius="16" Padding="20,16"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsDifficultyHard, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectDifficultyCommand}"
+                                                  CommandParameter="Складний"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                            <Label Grid.Column="0" Text="🔴" FontSize="28"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Складний"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsDifficultyHard, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="Переважно складні завдання, більше часу між дедлайнами"
+                                       FontSize="13"
+                                       TextColor="{Binding IsDifficultyHard, Converter={StaticResource BoolToTagTextConverter}}"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsDifficultyHard}"/>
+                        </Grid>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- КРОК 3: Типи завдань -->
+                <VerticalStackLayout IsVisible="{Binding IsStep3}" Spacing="16">
+
+                    <Label Text="📝 Типи завдань"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"/>
+                    <Label Text="Оберіть типи завдань, які AI включить у ваш план"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding TaskTypes}" Spacing="10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SelectableItem">
+                                <Frame CornerRadius="14" Padding="16,12"
+                                       HasShadow="False"
+                                       BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToTagColorConverter}}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RecommendationsViewModel}},
+                                                      Path=ToggleTaskTypeCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Emoji}"
+                                               FontSize="24"
+                                               VerticalOptions="Center"/>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Name}"
+                                               FontSize="16"
+                                               TextColor="{Binding IsSelected, Converter={StaticResource BoolToTagTextConverter}}"
+                                               VerticalOptions="Center"/>
+                                        <Frame Grid.Column="2"
+                                               CornerRadius="10" WidthRequest="24" HeightRequest="24"
+                                               Padding="0" HasShadow="False"
+                                               BackgroundColor="{DynamicResource Primary}"
+                                               VerticalOptions="Center"
+                                               IsVisible="{Binding IsSelected}">
+                                            <Label Text="✓" FontSize="14" FontAttributes="Bold"
+                                                   TextColor="{DynamicResource SurfaceLight}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Frame>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- КРОК 4: Час навчання -->
+                <VerticalStackLayout IsVisible="{Binding IsStep4}" Spacing="16">
+
+                    <Label Text="🕐 Час навчання"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"/>
+                    <Label Text="Коли вам найзручніше навчатись?"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- Вранці -->
+                    <Frame CornerRadius="16" Padding="20,14"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsTimeMorning, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectStudyTimeCommand}"
+                                                  CommandParameter="Вранці"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                            <Label Grid.Column="0" Text="🌅" FontSize="28" VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Вранці"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsTimeMorning, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="06:00 — 12:00"
+                                       FontSize="13"
+                                       TextColor="{Binding IsTimeMorning, Converter={StaticResource BoolToTagTextConverter}}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsTimeMorning}"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Вдень -->
+                    <Frame CornerRadius="16" Padding="20,14"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsTimeAfternoon, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectStudyTimeCommand}"
+                                                  CommandParameter="Вдень"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                            <Label Grid.Column="0" Text="☀️" FontSize="28" VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Вдень"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsTimeAfternoon, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="12:00 — 18:00"
+                                       FontSize="13"
+                                       TextColor="{Binding IsTimeAfternoon, Converter={StaticResource BoolToTagTextConverter}}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsTimeAfternoon}"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Ввечері -->
+                    <Frame CornerRadius="16" Padding="20,14"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsTimeEvening, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectStudyTimeCommand}"
+                                                  CommandParameter="Ввечері"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                            <Label Grid.Column="0" Text="🌙" FontSize="28" VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Ввечері"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsTimeEvening, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="18:00 — 24:00"
+                                       FontSize="13"
+                                       TextColor="{Binding IsTimeEvening, Converter={StaticResource BoolToTagTextConverter}}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsTimeEvening}"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- В різний час -->
+                    <Frame CornerRadius="16" Padding="20,14"
+                           HasShadow="False"
+                           BackgroundColor="{Binding IsTimeAny, Converter={StaticResource BoolToTagColorConverter}}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectStudyTimeCommand}"
+                                                  CommandParameter="В різний час"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                            <Label Grid.Column="0" Text="🔄" FontSize="28" VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="В різний час"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="{Binding IsTimeAny, Converter={StaticResource BoolToTagTextConverter}}"/>
+                                <Label Text="Гнучкий розклад, не прив'язаний до часу"
+                                       FontSize="13"
+                                       TextColor="{Binding IsTimeAny, Converter={StaticResource BoolToTagTextConverter}}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="✓" FontSize="20"
+                                   TextColor="{DynamicResource SurfaceLight}"
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding IsTimeAny}"/>
+                        </Grid>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- КРОК 5: Завершення — Summary + Побажання + Кастомний API-ключ -->
+                <VerticalStackLayout IsVisible="{Binding IsStep5}" Spacing="16">
+
+                    <Label Text="✨ Завершення"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextPrimary}"/>
+                    <Label Text="Майже готово! Перевірте параметри та натисніть «Генерувати»"
+                           FontSize="14"
+                           TextColor="{DynamicResource TextSecondary}"/>
+
+                    <!-- 1. ПОПЕРЕДНІЙ ПЕРЕГЛЯД ПЛАНУ -->
+                    <Frame CornerRadius="16" Padding="18,14"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Surface}">
+                        <VerticalStackLayout Spacing="12">
+
+                            <!-- Заголовок секції -->
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Label Grid.Column="0" Text="📋" FontSize="18"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1"
+                                       Text="Попередній перегляд плану"
+                                       FontSize="15" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+
+                            <BoxView Color="{DynamicResource Gray300}" HeightRequest="1"/>
+
+                            <!-- Предмет -->
+                            <Grid ColumnDefinitions="120,*" ColumnSpacing="8">
+                                <Label Grid.Column="0"
+                                       Text="📖 Предмет"
+                                       FontSize="13"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding SummarySubject}"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       LineBreakMode="TailTruncation"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+
+                            <!-- Кількість завдань -->
+                            <Grid ColumnDefinitions="120,*" ColumnSpacing="8">
+                                <Label Grid.Column="0"
+                                       Text="📝 Завдань"
+                                       FontSize="13"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding SummaryTaskCount}"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+
+                            <!-- Складність -->
+                            <Grid ColumnDefinitions="120,*" ColumnSpacing="8">
+                                <Label Grid.Column="0"
+                                       Text="⚡ Складність"
+                                       FontSize="13"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       VerticalOptions="Center"/>
+                                <HorizontalStackLayout Grid.Column="1" Spacing="6"
+                                       VerticalOptions="Center">
+                                    <Label Text="{Binding SummaryDifficultyEmoji}" FontSize="14"/>
+                                    <Label Text="{Binding SummaryDifficulty}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{DynamicResource TextPrimary}"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <!-- Час навчання -->
+                            <Grid ColumnDefinitions="120,*" ColumnSpacing="8">
+                                <Label Grid.Column="0"
+                                       Text="🕐 Час"
+                                       FontSize="13"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding SummaryStudyTime}"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+
+                            <!-- Типи завдань -->
+                            <Grid ColumnDefinitions="120,*" ColumnSpacing="8">
+                                <Label Grid.Column="0"
+                                       Text="🗂 Типи"
+                                       FontSize="13"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       VerticalOptions="Center"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding SummaryTaskTypes}"
+                                       FontSize="18"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- 2. ДОДАТКОВІ ПОБАЖАННЯ -->
+                    <Frame CornerRadius="16" Padding="18,14"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Surface}">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="💬 Додаткові побажання (необов'язково)"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="{DynamicResource TextPrimary}"/>
+                            <Editor Placeholder="Наприклад: зробіть акцент на темі інтегралів, більше практики..."
+                                    Text="{Binding AdditionalPrefs}"
+                                    TextColor="{DynamicResource TextPrimary}"
+                                    PlaceholderColor="{DynamicResource TextSecondary}"
+                                    BackgroundColor="Transparent"
+                                    FontSize="14"
+                                    AutoSize="TextChanges"
+                                    MinimumHeightRequest="80"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- 3. TOGGLE: ВИКОРИСТАТИ СВІЙ API-КЛЮЧ -->
+                    <Frame CornerRadius="16" Padding="18,14"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Surface}">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleUseCustomApiKeyCommand}"/>
+                        </Frame.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="*,40" ColumnSpacing="12">
+
+                            <VerticalStackLayout Grid.Column="0" Spacing="3"
+                                 VerticalOptions="Center">
+                                <Label Text="{Binding ApiKeyToggleLabel}"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"/>
+                                <Label FontSize="12"
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       LineBreakMode="WordWrap">
+                                    <Label.Text>
+                                        <Binding Path="UseCustomApiKey">
+                                            <Binding.Converter>
+                                                <converters:BoolToStringConverter
+                                                        TrueValue="Вводжу власний ключ з console.anthropic.com"
+                                                        FalseValue="Використовується вбудований ключ додатку" />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Label.Text>
+                                </Label>
+                            </VerticalStackLayout>
+
+                            <!-- CheckBox: використати свій API-ключ -->
+                            <CheckBox Grid.Column="1"
+                                      IsChecked="{Binding UseCustomApiKey}"                                      
+                                      Color="{DynamicResource Primary}"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="End"/>
+
+                        </Grid>
+                    </Frame>
+
+                    <!-- 4. ПОЛЕ ВВОДУ API-КЛЮЧА (тільки коли UseCustomApiKey=true) -->
+                    <Frame CornerRadius="16" Padding="18,14"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Surface}"
+                           IsVisible="{Binding IsApiKeyVisible}">
+                        <VerticalStackLayout Spacing="10">
+
+                            <!-- Заголовок + кнопки -->
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+
+                                <Label Grid.Column="0"
+                                       Text="🔑 API-ключ Anthropic"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       VerticalOptions="Center"/>
+
+                                <!-- Очко (показати/сховати) -->
+                                <Frame Grid.Column="1"
+                                       CornerRadius="8" Padding="8,6"
+                                       HasShadow="False"
+                                       BackgroundColor="{DynamicResource Surface}"> 
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ToggleApiKeyVisibilityCommand}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Label Text="{Binding EyeIcon}"
+                                           FontSize="18"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <!-- Зберегти -->
+                                <Frame Grid.Column="2"
+                                       CornerRadius="8" Padding="10,6"
+                                       HasShadow="False"
+                                       BackgroundColor="{DynamicResource Primary}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SaveApiKeyCommand}"/>
+                                    </Frame.GestureRecognizers>
+                                    <Label Text="💾 Зберегти"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{DynamicResource SurfaceLight}"/>
+                                </Frame>
+                            </Grid>
+
+                            <!-- Entry — IsPassword прив'язаний до IsPasswordMode -->
+                            <Grid ColumnDefinitions="*" >
+                                <Entry x:Name="ApiKeyEntry"
+                                       Placeholder="sk-ant-api03-..."
+                                       Text="{Binding ApiKey}"
+                                       IsPassword="{Binding IsPasswordMode}"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       PlaceholderColor="{DynamicResource TextSecondary}"
+                                       BackgroundColor="Transparent"
+                                       FontSize="14"/>
+                            </Grid>
+
+                            <Label FontSize="12"
+                                   TextColor="{DynamicResource TextSecondary}"
+                                   LineBreakMode="WordWrap">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Отримайте безкоштовний ключ на "/>
+                                        <Span Text="console.anthropic.com"
+                                              TextColor="{DynamicResource Primary}"
+                                              TextDecorations="Underline"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- 5. СТАТУС / РЕЗУЛЬТАТ -->
+                    <Frame CornerRadius="16" Padding="16,12"
+                           HasShadow="False"
+                           BackgroundColor="{DynamicResource Surface}"
+                           IsVisible="{Binding StatusMessage,
+                               Converter={StaticResource StringNotNullOrEmptyConverter}}">
+                        <VerticalStackLayout Spacing="10">
+
+                            <Label Text="{Binding StatusMessage}"
+                                   FontSize="14"
+                                   TextColor="{DynamicResource TextPrimary}"
+                                   LineBreakMode="WordWrap"/>
+
+                            <!-- Кнопка поділитися — тільки після успішної генерації -->
+                            <Button Text="📤 Відкрити / Поділитися файлом"
+                                    x:Name="ShareFileButton"
+                                    BackgroundColor="{DynamicResource Secondary}"
+                                    TextColor="{DynamicResource SurfaceLight}"
+                                    FontSize="15" FontAttributes="Bold"
+                                    HeightRequest="48" CornerRadius="10"
+                                    IsVisible="{Binding IsGenerated}"
+                                    Clicked="OnShareFileClicked"/>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- 6. ІНДИКАТОР ЗАВАНТАЖЕННЯ -->
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       IsVisible="{Binding IsBusy}"
+                                       Color="{DynamicResource Primary}"
+                                       HorizontalOptions="Center"
+                                       HeightRequest="48" WidthRequest="48"/>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Рядок 3 — Нижня панель (кнопки + посилання) -->
+        <VerticalStackLayout Grid.Row="3"
+                             BackgroundColor="{DynamicResource Surface}"
+                             Padding="20,12,20,16"
+                             Spacing="10">
+
+            <!-- Кнопки навігації -->
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+
+                <!-- Назад -->
+                <Button Grid.Column="0"
+                        Text="← Назад"
+                        IsVisible="{Binding CanGoBack}"
+                        Command="{Binding PrevStepCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{DynamicResource Primary}"
+                        BorderColor="{DynamicResource Primary}"
+                        BorderWidth="1.5"
+                        FontSize="15"
+                        HeightRequest="50"
+                        WidthRequest="110"/>
+
+                <!-- Далі (кроки 1-4) -->
+                <Button Grid.Column="1"
+                        Text="Далі →"
+                        IsVisible="{Binding IsNotLastStep}"
+                        Command="{Binding NextStepCommand}"
+                        BackgroundColor="{DynamicResource Primary}"
+                        TextColor="{DynamicResource SurfaceLight}"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        HeightRequest="50"/>
+
+                <!-- Генерувати (крок 5) -->
+                <Button Grid.Column="1"
+                        Text="🤖 Генерувати план"
+                        IsVisible="{Binding IsLastStep}"
+                        Command="{Binding GenerateCommand}"
+                        IsEnabled="{Binding CanGenerate}"
+                        BackgroundColor="{DynamicResource Primary}"
+                        TextColor="{DynamicResource SurfaceLight}"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        HeightRequest="50"/>
+            </Grid>
+
+            <!-- Посилання "Детальніше" -->
+            <Label HorizontalOptions="Center"
+                   FontSize="13">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="📖 "/>
+                        <Span Text="Детальніше про всі функції додатку"
+                              TextColor="{DynamicResource Primary}"
+                              TextDecorations="Underline"
+                              FontAttributes="Bold"/>
+                    </FormattedString>
+                </Label.FormattedText>
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToHelpCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </VerticalStackLayout>
+
+        <!-- TOAST OVERLAY — накладається поверх всього (Grid.RowSpan)
+             HorizontalOptions="End" + VerticalOptions="Start"
+             → тости з'являються у верхньому правому куті -->
+        <VerticalStackLayout x:Name="ToastContainer"
+                             Grid.RowSpan="4"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             Margin="0,12,12,0"
+                             Spacing="8"
+                             WidthRequest="270"
+                             InputTransparent="False"/>
+
+    </Grid>
+</ContentPage>

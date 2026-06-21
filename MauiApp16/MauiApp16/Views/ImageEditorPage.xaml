@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp16.Views.ImageEditorPage"
+             BackgroundColor="Black"
+             Title="Редагування фото"
+             Shell.NavBarIsVisible="True">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- Область перегляду і редагування -->
+        <Grid Grid.Row="0">
+
+            <!-- Зображення з підтримкою жестів -->
+            <Image x:Name="EditImage"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Fill"
+                   VerticalOptions="Fill">
+                <Image.GestureRecognizers>
+                    <PinchGestureRecognizer PinchUpdated="OnPinchUpdated"/>
+                    <PanGestureRecognizer PanUpdated="OnPanUpdated"/>
+                </Image.GestureRecognizers>
+            </Image>
+
+            <!-- Затемнення за межами кола (показує що буде обрізано) -->
+            <Grid x:Name="OverlayGrid"
+                  HorizontalOptions="Fill"
+                  VerticalOptions="Fill"
+                  InputTransparent="True">
+                <!-- Верхня смуга -->
+                <BoxView BackgroundColor="#99000000"
+                         VerticalOptions="Start"
+                         HeightRequest="80"/>
+                <!-- Нижня смуга -->
+                <BoxView BackgroundColor="#99000000"
+                         VerticalOptions="End"
+                         HeightRequest="80"/>
+            </Grid>
+
+            <!-- Рамка-орієнтир для кадрування (велике коло) -->
+            <Frame x:Name="CropCircle"
+                   WidthRequest="300" HeightRequest="300"
+                   CornerRadius="150"
+                   HorizontalOptions="Center" VerticalOptions="Center"
+                   BackgroundColor="Transparent"
+                   BorderColor="White"
+                   HasShadow="False"
+                   InputTransparent="True"
+                   Opacity="0.85">
+                <BoxView BackgroundColor="Transparent"/>
+            </Frame>
+
+            <!-- Підказка зверху -->
+            <Label Text="Зводьте пальці для зуму • Перетягуйте для позиції"
+                   FontSize="13" TextColor="White" Opacity="0.8"
+                   HorizontalOptions="Center" VerticalOptions="Start"
+                   Margin="0,16,0,0"
+                   HorizontalTextAlignment="Center"/>
+
+            <!-- Кнопки масштабу (для мишки/клавіатури) -->
+            <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start"
+                                   Margin="0,16,16,0" Spacing="8">
+                <Button Text="−"
+                        x:Name="ZoomOutBtn"
+                        BackgroundColor="#88FFFFFF"
+                        TextColor="Black"
+                        FontSize="20" FontAttributes="Bold"
+                        WidthRequest="44" HeightRequest="44"
+                        CornerRadius="22"
+                        Padding="0"
+                        Clicked="OnZoomOutClicked"/>
+                <Button Text="↺"
+                        x:Name="ResetBtn"
+                        BackgroundColor="#88FFFFFF"
+                        TextColor="Black"
+                        FontSize="16"
+                        WidthRequest="44" HeightRequest="44"
+                        CornerRadius="22"
+                        Padding="0"
+                        Clicked="OnResetClicked"/>
+                <Button Text="+"
+                        x:Name="ZoomInBtn"
+                        BackgroundColor="#88FFFFFF"
+                        TextColor="Black"
+                        FontSize="20" FontAttributes="Bold"
+                        WidthRequest="44" HeightRequest="44"
+                        CornerRadius="22"
+                        Padding="0"
+                        Clicked="OnZoomInClicked"/>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- Кнопки -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="12"
+              Padding="20,16"
+              BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#1E1E1E}">
+
+            <Button Grid.Column="0"
+                    x:Name="CancelButton"
+                    Text="✖ Скасувати"
+                    BackgroundColor="Transparent"
+                    TextColor="{DynamicResource TextSecondary}"
+                    BorderColor="{DynamicResource Gray300}"
+                    BorderWidth="1.5"
+                    FontSize="16"
+                    HeightRequest="50"
+                    Clicked="OnCancelClicked"/>
+
+            <Button Grid.Column="1"
+                    x:Name="SaveButton"
+                    Text="✅ Застосувати"
+                    BackgroundColor="{DynamicResource Primary}"
+                    TextColor="{DynamicResource SurfaceLight}"
+                    FontSize="16" FontAttributes="Bold"
+                    HeightRequest="50"
+                    Clicked="OnSaveClicked"/>
+        </Grid>
+
+    </Grid>
+</ContentPage>

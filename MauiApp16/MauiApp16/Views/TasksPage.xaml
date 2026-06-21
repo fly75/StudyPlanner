@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiApp16.ViewModels"
+             x:Class="MauiApp16.Views.TasksPage"
+             BackgroundColor="{DynamicResource Background}">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="20,20,20,0">
+
+        <!-- Header -->
+        <Frame Grid.Row="0" 
+               CornerRadius="20"
+               Padding="20"
+               HasShadow="True"
+               Background="{StaticResource PrimaryGradient}"
+               Margin="0,10">
+            <VerticalStackLayout Spacing="5">
+                <Label Text="{Binding SelectedCourse.Name, StringFormat='📖 {0}'}" 
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource SurfaceLight}"
+                       HorizontalOptions="Center"/>
+                <Label Text="Список завдань курсу" 
+                       FontSize="14"
+                       TextColor="{DynamicResource White}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Рядок пошуку -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,8,0,0">
+            <Frame Grid.Column="0"
+                   CornerRadius="14" Padding="12,0"
+                   HasShadow="False"
+                   BackgroundColor="{DynamicResource Surface}">
+                <SearchBar Placeholder="🔍 Пошук завдань..."
+                           Text="{Binding SearchQuery}"
+                           TextColor="{DynamicResource TextPrimary}"
+                           PlaceholderColor="{DynamicResource TextSecondary}"
+                           BackgroundColor="Transparent"
+                           CancelButtonColor="{DynamicResource Primary}"/>
+            </Frame>
+
+            <!-- Кнопка фільтрів -->
+            <Frame x:Name="FilterButton"
+                   Grid.Column="1"
+                   CornerRadius="14" Padding="0"
+                   WidthRequest="55" HeightRequest="55"
+                   HasShadow="False"
+                   BackgroundColor="{Binding HasActiveFilters,
+                       Converter={StaticResource BoolToFilterColorConverter}}">
+                <Label Text="⚙️" FontSize="22"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Frame>
+        </Grid>
+
+        <!-- Панель фільтрів (розкривається) -->
+        <Frame Grid.Row="2"
+               CornerRadius="16" Padding="16" HasShadow="False"
+               BackgroundColor="{DynamicResource Surface}"
+               Margin="0,6,0,0"
+               IsVisible="{Binding IsFilterExpanded}">
+            <VerticalStackLayout Spacing="12">
+
+                <!-- Фільтр за статусом -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Статус" FontSize="13" FontAttributes="Bold"
+                           TextColor="{DynamicResource TextSecondary}"/>
+                    <Picker SelectedIndex="{Binding SelectedStatusIndex}"
+                            TextColor="{DynamicResource TextPrimary}"
+                            BackgroundColor="{DynamicResource Background}"
+                            Title="Оберіть статус">
+                        <Picker.Items>
+                            <x:String>Всі</x:String>
+                            <x:String>⏳ Очікує</x:String>
+                            <x:String>🔄 В процесі</x:String>
+                            <x:String>✅ Завершено</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </VerticalStackLayout>
+
+                <!-- Фільтр за датою -->
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="Фільтр за дедлайном"
+                               FontSize="13" FontAttributes="Bold"
+                               TextColor="{DynamicResource TextSecondary}"
+                               VerticalOptions="Center"/>
+                                        <Switch Grid.Column="1"
+                                                IsToggled="{Binding IsDeadlineFilterEnabled}"
+                                                OnColor="{DynamicResource Primary}"/>
+                    </Grid>
+
+                    <!-- DatePicker'и показуємо тільки коли Switch увімкнено -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10"
+                          IsVisible="{Binding IsDeadlineFilterEnabled}">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="Від" FontSize="13"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <DatePicker Date="{Binding DeadlineFrom}"
+                                        TextColor="{DynamicResource TextPrimary}"
+                                        BackgroundColor="{DynamicResource Background}"
+                                        Format="dd.MM.yyyy"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <Label Text="До" FontSize="13"
+                                   TextColor="{DynamicResource TextSecondary}"/>
+                            <DatePicker Date="{Binding DeadlineTo}"
+                                        TextColor="{DynamicResource TextPrimary}"
+                                        BackgroundColor="{DynamicResource Background}"
+                                        Format="dd.MM.yyyy"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Кнопки дій -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Застосувати"
+                            Command="{Binding ApplyFiltersCommand}"
+                            BackgroundColor="{DynamicResource Primary}"
+                            TextColor="{DynamicResource SurfaceLight}"
+                            CornerRadius="12" HeightRequest="44"/>
+                    <Button Grid.Column="1"
+                            Text="Скинути"
+                            Command="{Binding ClearFiltersCommand}"
+                            Style="{StaticResource SecondaryButton}"
+                            CornerRadius="12" HeightRequest="44"/>
+                </Grid>
+
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Tasks List -->
+        <ScrollView Grid.Row="3">
+            <CollectionView ItemsSource="{Binding FilteredTasks}" SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="8"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="20"
+                               Padding="20"
+                               HasShadow="True"
+                               BackgroundColor="{DynamicResource Surface}"
+                               Margin="0,10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TasksViewModel}}, Path=TaskSelectedCommand}"
+                                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto" 
+                                  ColumnDefinitions="Auto,*,Auto"
+                                  RowSpacing="10"
+                                  ColumnSpacing="15">
+
+                                <!-- Status Icon -->
+                                <Frame Grid.Row="0" Grid.Column="0" 
+                                       Grid.RowSpan="2"
+                                       WidthRequest="50" 
+                                       HeightRequest="50"
+                                       CornerRadius="25"
+                                       Padding="0"
+                                       HasShadow="False"
+                                       BackgroundColor="{DynamicResource Accent}"
+                                       VerticalOptions="Start">
+                                    <Label Text="{Binding Status, Converter={StaticResource TaskStatusToIconConverter}}"
+                                           FontSize="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <!-- Task Title -->
+                                <Label Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding Title}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource TextPrimary}"
+                                       LineBreakMode="WordWrap"/>
+
+                                <!-- Complete Button -->
+                                <Button Grid.Row="0" Grid.Column="2" 
+                                        Grid.RowSpan="2"
+                                        Text="✓"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TasksViewModel}}, Path=CompleteTaskCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Style="{StaticResource SuccessButtonFrame}"
+                                        BackgroundColor="{StaticResource Success}"
+                                        TextColor="White"
+                                        FontSize="24"
+                                        FontAttributes="Bold"
+                                        CornerRadius="25"
+                                        WidthRequest="50"
+                                        HeightRequest="50"
+                                        Padding="0"
+                                        IsVisible="{Binding Status, Converter={StaticResource TaskNotCompletedConverter}}"
+                                        VerticalOptions="Center" />
+
+                                <!-- Task Description -->
+                                <Label Grid.Row="1" Grid.Column="1"
+                                       Text="{Binding Description}" 
+                                       FontSize="14" 
+                                       TextColor="{DynamicResource TextSecondary}"
+                                       LineBreakMode="WordWrap"
+                                       IsVisible="{Binding Description, Converter={StaticResource StringNotNullOrEmptyConverter}}" />
+
+                                <!-- Divider -->
+                                <BoxView Grid.Row="2" Grid.ColumnSpan="3"
+                                         Color="{DynamicResource Gray300}"
+                                         HeightRequest="1"
+                                         Margin="0,5"/>
+
+                                <!-- Task Info -->
+                                <VerticalStackLayout Grid.Row="3" Grid.ColumnSpan="3" Spacing="10">
+
+                                    <!-- Deadline Row -->
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                        <HorizontalStackLayout Grid.Column="0" Spacing="8">
+                                            <Label Text="📅" 
+                                                   FontSize="16"
+                                                   VerticalOptions="Center"/>
+                                            <Label Text="{Binding Deadline, StringFormat='Дедлайн: {0:dd.MM.yyyy HH:mm}'}" 
+                                                   FontSize="13"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource Secondary}"
+                                                   VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+
+                                        <!-- Priority Badge -->
+                                        <Frame Grid.Column="1"
+                                               BackgroundColor="{Binding Priority, Converter={StaticResource PriorityToColorConverter}}"
+                                               HasShadow="False"
+                                               CornerRadius="12"
+                                               Padding="12,6"
+                                               VerticalOptions="Center">
+                                            <Label Text="{Binding Priority, Converter={StaticResource PriorityToStringConverter}}"
+                                                   FontSize="11"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"/>
+                                        </Frame>
+                                    </Grid>
+
+                                    <!-- Course, Tags and Status Row -->
+                                    <VerticalStackLayout Spacing="6">
+
+                                        <!-- Рядок: іконка предмету + назва -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                            <HorizontalStackLayout Grid.Column="0" Spacing="8">
+                                                <Label Text="📚" FontSize="16"/>
+                                                <Label Text="{Binding CourseName}" 
+                                                       FontSize="13" 
+                                                       TextColor="{DynamicResource TextSecondary}"
+                                                       VerticalOptions="Center"
+                                                       LineBreakMode="TailTruncation"/>
+                                            </HorizontalStackLayout>
+
+                                            <!-- Status -->
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding Status}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource Tertiary}"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="End"/>
+                                        </Grid>
+
+                                        <!-- Теги — окремий рядок під предметом -->
+                                        <FlexLayout BindableLayout.ItemsSource="{Binding Tags}"
+                                                    Wrap="Wrap"
+                                                    Direction="Row">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate x:DataType="x:String">
+                                                    <Frame Margin="0,0,4,4"
+                                                           Padding="10,4"
+                                                           CornerRadius="10"
+                                                           HasShadow="False"
+                                                           BackgroundColor="{DynamicResource Accent}">
+                                                        <Label Text="{Binding .}"
+                                                               FontSize="11"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{DynamicResource Gray900}"/>
+                                                    </Frame>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </FlexLayout>
+
+                                    </VerticalStackLayout>
+
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="40" Spacing="15" VerticalOptions="Center">
+                        <Label Text="✅" 
+                               FontSize="80"
+                               HorizontalOptions="Center"
+                               Opacity="0.3"/>
+                        <Label Text="Немає завдань" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Додайте нове завдання для цього предмету" 
+                               FontSize="15"
+                               TextColor="{DynamicResource TextSecondary}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </ScrollView>
+
+        <!-- Кнопки дій -->
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,8,0,8">
+
+            <!-- Кнопка додати -->
+            <Button x:Name="AddTaskBtn"
+                    Grid.Column="0"
+                    Text="➕ Додати завдання"
+                    Command="{Binding AddTaskCommand}"
+                    BackgroundColor="{DynamicResource Primary}"
+                    TextColor="{DynamicResource SurfaceLight}"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HeightRequest="55"/>
+
+            <!-- Кнопка експорту -->
+            <Frame x:Name="ExportButton"
+                   Grid.Column="1"
+                   CornerRadius="14" Padding="0"
+                   WidthRequest="55" HeightRequest="55"
+                   HasShadow="False"
+                   BackgroundColor="{DynamicResource Surface}">
+                <Label Text="📤" FontSize="24"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+
+        </Grid>
+
+    </Grid>
+</ContentPage>
